@@ -1,4 +1,4 @@
-jidoteki-admin-ansible
-======================
+jidoteki-admin
+==============
 
-Ansible roles for Jidoteki virtual appliance administration
+Jidoteki virtual appliance administration
