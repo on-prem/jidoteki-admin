@@ -1,0 +1,97 @@
+# Jidoteki Admin tasks
+
+- name: Create '/opt/jidoteki/admin' directory structure
+  file: >
+    state=directory
+    path={{ item }}
+    owner=root
+    group=root
+    mode=0755
+  with_items:
+    - "{{ admin_path }}/bin"
+    - "{{ admin_path }}/etc"
+    - "{{ admin_path }}/tmp"
+    - "{{ admin_path }}/log"
+  tags:
+    - admin
+
+- name: Copy the secure keyfile used to decrypt software update packages
+  copy: >
+    src="{{ keypair_path }}/updates.key"
+    dest="{{ admin_path }}/etc/updates.key"
+    owner=root
+    group=root
+    mode=0600
+  tags:
+    - admin
+
+- name: Create admin directories only writeable by root
+  file: >
+    state=directory
+    path={{ item }}
+    owner=root
+    group=admin
+    mode=0750
+    recurse=no
+  with_items:
+    - "{{ admin_path }}/home"
+    - "{{ admin_path }}/home/.ssh"
+    - "{{ admin_path }}/home/sftp"
+  tags:
+    - admin
+
+- name: Add 'admin/sftpadmin' user's public SSH key
+  authorized_key: >
+    user=admin
+    key="{{ item }}"
+    key_options='no-pty,command="{{ admin_path }}/bin/wrapper.sh"'
+    manage_dir=no
+  with_file:
+    - "{{ keypair_path }}/admin_ssh_key.pub"
+  tags:
+    - admin
+
+- name: Ensure 'admin/sftpadmin' user can't modify the authorized_keys file
+  file: >
+    state=file
+    path="{{ admin_path }}/home/.ssh/authorized_keys"
+    owner=root
+    group=admin
+    mode=0640
+  tags:
+    - admin
+
+- name: Create admin sftp uploads directory
+  file: >
+    state=directory
+    path={{ item }}
+    owner=sftpadmin
+    group=admin
+    mode=0750
+    recurse=no
+  with_items:
+    - "{{ admin_path }}/home/sftp/uploads"
+  tags:
+    - admin
+
+- name: Add SSH admin management scripts
+  copy: >
+    src={{ item }}
+    dest="{{ admin_path }}/bin/{{ item }}"
+    owner=root
+    group=root
+    mode=0755
+  with_items:
+    - update_vm.sh
+  tags:
+    - admin
+
+- name: Add SSH admin wrapper script
+  copy: >
+    src=wrapper.sh
+    dest="{{ admin_path }}/bin/wrapper.sh"
+    owner=root
+    group=admin
+    mode=0750
+  tags:
+    - admin

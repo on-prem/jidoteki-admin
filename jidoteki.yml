@@ -1,0 +1,9 @@
+# Jidoteki virtual appliance admin
+#
+# Run the 'system' role first because it creates users needed in other roles.
+
+- hosts: appliances
+  gather_facts: false
+  roles:
+    - system
+    - admin
