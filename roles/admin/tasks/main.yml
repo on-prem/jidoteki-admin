@@ -25,6 +25,25 @@
   tags:
     - admin
 
+- name: Create the initial version.txt file
+  lineinfile: >
+    state=present
+    create=yes
+    line="1.0.0"
+    dest="{{ admin_path }}/etc/version.txt"
+  tags:
+    - admin
+
+- name: Set the proper file permissions on the version.txt file
+  file: >
+    state=file
+    path="{{ admin_path }}/etc/version.txt"
+    owner=root
+    group=root
+    mode=0644
+  tags:
+    - admin
+
 - name: Create admin directories only writeable by root
   file: >
     state=directory
