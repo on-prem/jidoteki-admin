@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Wrapper for executing admin commands on a virtual appliance
 #
