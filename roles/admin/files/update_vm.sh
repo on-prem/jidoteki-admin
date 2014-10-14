@@ -5,7 +5,7 @@
 # Copyright (c) 2013-2014 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # http://unscramble.co.jp
 #
-# VERSION: 0.2.0
+# VERSION: 0.3.0
 
 set -u
 set -e
@@ -62,17 +62,49 @@ compare_versions() {
 
   # Only compare if both files exist
   if [ -f "version.txt" ] && [ -f "${admin_dir}/etc/version.txt" ]; then
+    version_regex="^(.*\-*v*)([0-9]+)\.([0-9]+)\.([0-9]+)$"
     package_version=`cat version.txt`
     server_version=`cat ${admin_dir}/etc/version.txt`
+
+    # Note: this requires GNU sort from coreutils
     latest=`echo "$server_version\n$package_version" | sort -V | tail -n 1`
 
+    package_major=`echo $package_version | sed -E "s/$version_regex/\2/"`
+    package_minor=`echo $package_version | sed -E "s/$version_regex/\3/"`
+    package_patch=`echo $package_version | sed -E "s/$version_regex/\4/"`
+
+    server_major=`echo $server_version | sed -E "s/$version_regex/\2/"`
+    server_minor=`echo $server_version | sed -E "s/$version_regex/\3/"`
+    server_patch=`echo $server_version | sed -E "s/$version_regex/\4/"`
+
+    next_minor=`expr $server_minor + 1`
+
+    # Ensure the package isn't too old
     if [ "$latest" != "$package_version" ]; then
-      echo "software update package ${package_version} is too old." 2>&1 | tee -a "${admin_dir}/log/update.log"
-      return 1
-    elif [ "$latest" = "$server_version" ]; then
-      echo "software update package ${package_version} already up-to-date." 2>&1 | tee -a "${admin_dir}/log/update.log"
+      echo "software update package v${package_version} is too old." 2>&1 | tee -a "${admin_dir}/log/update.log"
       return 1
     fi
+
+    # Ensure the package isn't the exact same
+    if [ "$package_version" = "$server_version" ]; then
+      echo "software update package v${package_version} already up-to-date." 2>&1 | tee -a "${admin_dir}/log/update.log"
+      return 1
+    fi
+
+    # Ensure the major version matches
+    if [ "$package_major" != "$server_major" ]; then
+      echo "software update package v${package_version} must be v${server_major}.x.x" 2>&1 | tee -a "${admin_dir}/log/update.log"
+      return 1
+    fi
+
+    # Ensure the minor version is identical or +1
+    if [ "$package_minor" = "$server_minor" ] || [ "$package_minor" = "$next_minor" ]; then
+      return 0
+    else
+      echo "software update package v${package_version} must be v${server_major}.${server_minor}.x or v${server_major}.${next_minor}.x" 2>&1 | tee -a "${admin_dir}/log/update.log"
+      return 1
+    fi
+
   fi
 }
 
