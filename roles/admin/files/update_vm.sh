@@ -5,7 +5,7 @@
 # Copyright (c) 2013-2014 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # http://unscramble.co.jp
 #
-# VERSION: 0.3.0
+# VERSION: 0.3.1
 
 set -u
 set -e
@@ -97,12 +97,22 @@ compare_versions() {
       return 1
     fi
 
-    # Ensure the minor version is identical or +1
-    if [ "$package_minor" = "$server_minor" ] || [ "$package_minor" = "$next_minor" ]; then
-      return 0
+    # If it's a bundle, we only care if the minor is greater or equal
+    if [ -f "bundle.txt" ]; then
+      if [ "$package_minor" -ge "$server_minor" ]; then
+        return 0
+      else
+        echo "software update package v${package_version} must be v${server_major}.${server_minor}.x or greater" 2>&1 | tee -a "${admin_dir}/log/update.log"
+        return 1
+      fi
     else
-      echo "software update package v${package_version} must be v${server_major}.${server_minor}.x or v${server_major}.${next_minor}.x" 2>&1 | tee -a "${admin_dir}/log/update.log"
-      return 1
+      # Ensure the minor version is equal or +1
+      if [ "$package_minor" = "$server_minor" ] || [ "$package_minor" = "$next_minor" ]; then
+        return 0
+      else
+        echo "software update package v${package_version} must be v${server_major}.${server_minor}.x or v${server_major}.${next_minor}.x" 2>&1 | tee -a "${admin_dir}/log/update.log"
+        return 1
+      fi
     fi
 
   fi
