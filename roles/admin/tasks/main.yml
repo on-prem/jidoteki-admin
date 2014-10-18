@@ -29,10 +29,11 @@
   lineinfile: >
     state=present
     create=yes
-    line="1.0.0"
+    line="{{ release_version }}"
     dest="{{ admin_path }}/etc/version.txt"
   tags:
     - admin
+    - version
 
 - name: Set the proper file permissions on the version.txt file
   file: >
