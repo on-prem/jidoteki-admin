@@ -1,0 +1,18 @@
+# Setup a local Debian/Ubuntu package repo
+
+- name: Ensure local APT repo file is present
+  template: >
+    src=virtualappliance.list.j2
+    dest=/etc/apt/sources.list.d/virtualappliance.list
+    owner=root
+    group=root
+    mode=0640
+  tags:
+    - debian
+    - ubuntu
+
+- name: Ensure reprepro tool is installed
+  apt: name=reprepro state=latest
+  tags:
+   - debian
+   - ubuntu

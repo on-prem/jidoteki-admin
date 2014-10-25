@@ -12,7 +12,6 @@
     - debian
     - ubuntu
     - centos
-    - repo
 
 - name: Create 'admin' group
   group: >
@@ -82,3 +81,6 @@
   service: name=sshd state=restarted
   tags:
     - centos
+
+- include: repos_debian.yml
+- include: repos_centos.yml

@@ -1,0 +1,43 @@
+# Setup a local Debian/Ubuntu package repo
+
+- name: Ensure local apt repo directory exists
+  file: >
+    path={{ local_repo_path }}/apt/debian/conf
+    state=directory
+    recurse=true
+    owner=root
+    group=root
+    mode=0750
+  tags:
+    - debian
+    - ubuntu
+
+- name: Add options files for local apt repo
+  copy: >
+    src=options
+    dest={{ local_repo_path }}/apt/debian/conf/options
+    owner=root
+    group=root
+    mode=0640
+  tags:
+    - debian
+    - ubuntu
+
+- name: Add distributions file for local apt repo
+  template: >
+    src=distributions.j2
+    dest={{ local_repo_path }}/apt/debian/conf/distributions
+    owner=root
+    group=root
+    mode=0640
+  tags:
+    - debian
+    - ubuntu
+
+- name: Perform initial reprepro to create necessary files and directories
+  shell: >
+    chdir={{ local_repo_path }}/apt/debian
+    reprepro -Vb . export
+  tags:
+   - debian
+   - ubuntu

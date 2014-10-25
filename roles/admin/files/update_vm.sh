@@ -5,7 +5,7 @@
 # Copyright (c) 2013-2014 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # http://unscramble.co.jp
 #
-# VERSION: 0.3.3
+# VERSION: 0.4.0
 
 set -u
 set -e

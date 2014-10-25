@@ -1,0 +1,11 @@
+# Setup a local CentOS package repo
+
+- name: Ensure local yum repo directory exists
+  file: >
+    path={{ local_repo_path }}/yum/centos/RPMS
+    state=directory
+    recurse=true
+    owner=root
+    group=root
+  tags:
+    - centos

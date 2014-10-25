@@ -4,6 +4,10 @@
 
 This repository contains bash scripts, ansible roles, and other files needed to perform remote virtual appliance administration, updates, etc.
 
+## Version
+
+Current version is **v0.4.0**
+
 ## Ansible roles
 
 There are currently 2 roles executed in the following order:
@@ -24,6 +28,9 @@ Here is what the `system` role does:
   * Create an 'sftpadmin' user with limited privileges (sftp uploads)
   * Setup SFTP chroot for 'sftpadmin' in sshd_config
   * Restart the SSH daemon
+  * Create a local centos/debian/ubuntu package repository
+  * Install 'reprepro' tool for installing local packages (debian/ubuntu only)
+  * Install 'createrepo' tool for installing local packages (centos only)
 
 ### admin role
 
@@ -39,6 +46,8 @@ Here is what the `admin` role does:
   * Create admin sftp uploads directory
   * Add SSH admin management scripts
   * Add SSH admin wrapper script
+  * Create '/opt/jidoteki/repos' directory structure
+  * Run 'reprepro' to generate initial repo database (debian/ubuntu only)
 
 # License
 

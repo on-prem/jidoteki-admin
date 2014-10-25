@@ -115,3 +115,6 @@
     mode=0750
   tags:
     - admin
+
+- include: repos_debian.yml
+- include: repos_centos.yml

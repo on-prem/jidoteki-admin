@@ -1,0 +1,16 @@
+# Setup a local CentOS package repo
+
+- name: Ensure local RPM repo is present
+  template: >
+    src=virtualappliance.repo.j2
+    dest=/etc/yum.repos.d/virtualappliance.repo
+    owner=root
+    group=root
+    mode=0644
+  tags:
+    - centos
+
+- name: Ensure createrepo tool is installed
+  yum: name=createrepo state=latest
+  tags:
+   - centos
