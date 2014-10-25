@@ -5,7 +5,7 @@
 # Copyright (c) 2013-2014 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # http://unscramble.co.jp
 #
-# VERSION: 0.3.1
+# VERSION: 0.3.2
 
 set -u
 set -e
@@ -67,7 +67,7 @@ compare_versions() {
     server_version=`cat ${admin_dir}/etc/version.txt`
 
     # Note: this requires GNU sort from coreutils
-    latest=`echo "$server_version\n$package_version" | sort -V | tail -n 1`
+    latest=`/bin/echo -e "$server_version\n$package_version" | sort -V | tail -n 1`
 
     package_major=`echo $package_version | sed -E "s/$version_regex/\2/"`
     package_minor=`echo $package_version | sed -E "s/$version_regex/\3/"`
