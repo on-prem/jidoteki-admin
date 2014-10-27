@@ -2,8 +2,8 @@
 
 - name: Ensure local RPM repo is present
   template: >
-    src=virtualappliance.repo.j2
-    dest=/etc/yum.repos.d/virtualappliance.repo
+    src=local.repo.j2
+    dest=/etc/yum.repos.d/local.repo
     owner=root
     group=root
     mode=0644

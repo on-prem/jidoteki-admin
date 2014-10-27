@@ -2,8 +2,8 @@
 
 - name: Ensure local APT repo file is present
   template: >
-    src=virtualappliance.list.j2
-    dest=/etc/apt/sources.list.d/virtualappliance.list
+    src=local.list.j2
+    dest=/etc/apt/sources.list.d/local.list
     owner=root
     group=root
     mode=0640
