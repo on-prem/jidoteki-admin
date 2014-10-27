@@ -1,6 +1,6 @@
 Origin: Virtual Appliance
 Label: Virtual Appliance Repos
 Codename: local
-Architectures: {{ cpu_arch }}
+Architectures: i386 amd64 source
 Components: main
 Description: Local Apt repository for the Virtual Appliance

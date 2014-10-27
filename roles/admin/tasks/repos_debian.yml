@@ -14,22 +14,14 @@
 
 - name: Add options files for local apt repo
   copy: >
-    src=options
-    dest={{ local_repo_path }}/apt/debian/conf/options
+    src={{ item }}
+    dest={{ local_repo_path }}/apt/debian/conf/{{ item }}
     owner=root
     group=root
     mode=0640
-  tags:
-    - debian
-    - ubuntu
-
-- name: Add distributions file for local apt repo
-  template: >
-    src=distributions.j2
-    dest={{ local_repo_path }}/apt/debian/conf/distributions
-    owner=root
-    group=root
-    mode=0640
+  with_items:
+    - distributions
+    - options
   tags:
     - debian
     - ubuntu
