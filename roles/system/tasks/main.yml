@@ -1,5 +1,13 @@
 # Jidoteki Admin system tasks
 
+- name: Wait for SSH to be available
+  local_action: wait_for port="{{ ansible_ssh_port }}" host="{{ inventory_hostname }}" search_regex=OpenSSH delay=60 timeout=300 state=started
+  tags:
+    - system
+    - debian
+    - ubuntu
+    - centos
+
 - name: Disable 'requiretty' in sudoers file
   lineinfile: >
     state=present
