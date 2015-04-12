@@ -6,7 +6,7 @@ This repository contains bash scripts, ansible roles, and other files needed to 
 
 ## Version
 
-Current version is **v0.4.0**
+[![GitHub tag](https://img.shields.io/github/tag/unscramble/jidoteki-admin.svg)](https://jidoteki.com)
 
 ## Ansible roles
 
