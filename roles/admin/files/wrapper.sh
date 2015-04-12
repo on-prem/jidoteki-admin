@@ -13,6 +13,8 @@ case "${SSH_ORIGINAL_COMMAND}" in
   "version")
     if [ -f "${admin_dir}/etc/version.txt" ]; then cat ${admin_dir}/etc/version.txt; fi
     ;;
+  "license")
+    sudo ${admin_dir}/bin/update_license.sh
   *)
     exit 1
     ;;
