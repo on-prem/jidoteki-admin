@@ -2,10 +2,10 @@
 #
 # Generic script for updating a virtual appliance
 #
-# Copyright (c) 2013-2014 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# Copyright (c) 2013-2015 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # http://unscramble.co.jp
 #
-# VERSION: 0.4.1
+# VERSION: 0.5.0
 
 set -u
 set -e
