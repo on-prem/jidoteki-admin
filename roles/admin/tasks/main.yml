@@ -104,6 +104,7 @@
   with_items:
     - update_vm.sh
     - update_license.sh
+    - update_settings.sh
   tags:
     - admin
 
