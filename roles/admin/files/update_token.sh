@@ -5,7 +5,7 @@
 # Copyright (c) 2013-2015 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # https://unscramble.co.jp
 #
-# VERSION: 0.6.0
+# VERSION: 0.6.1
 
 set -u
 set -e
@@ -14,7 +14,7 @@ admin_dir="/opt/jidoteki/admin"
 uploads_dir="${admin_dir}/home/sftp/uploads"
 
 fail_and_exit() {
-  echo "[`date +%s`][VIRTUAL APPLIANCE] Invalid or missing API token" 2>&1 | tee -a "${admin_dir}/log/update.log"
+  echo "[`date +%s`][VIRTUAL APPLIANCE] Invalid or missing API token file" 2>&1 | tee -a "${admin_dir}/log/update.log"
   exit 1
 }
 
@@ -23,12 +23,12 @@ fail_and_exit() {
 move_api_token() {
   cd "${uploads_dir}"
 
-  if [ -f "api.token" ]; then
-    echo "[`date +%s`][VIRTUAL APPLIANCE] Updating API token. Please wait.." 2>&1 | tee -a "${admin_dir}/log/update.log"
-    mv -f api.token ${admin_dir}/etc/
-    chmod 640 "${admin_dir}/etc/api.token" ; chown root:admin "${admin_dir}/etc/api.token"
-    echo "[`date +%s`][VIRTUAL APPLIANCE] Updating API token successful" 2>&1 | tee -a "${admin_dir}/log/update.log"
-  fi
+  if [ ! -f "api.token" ]; then return 1; fi
+
+  echo "[`date +%s`][VIRTUAL APPLIANCE] Updating API token. Please wait.." 2>&1 | tee -a "${admin_dir}/log/update.log"
+  mv -f api.token ${admin_dir}/etc/
+  chmod 640 "${admin_dir}/etc/api.token" ; chown root:admin "${admin_dir}/etc/api.token"
+  echo "[`date +%s`][VIRTUAL APPLIANCE] Updating API token successful" 2>&1 | tee -a "${admin_dir}/log/update.log"
 }
 
 ################

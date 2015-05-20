@@ -4,7 +4,7 @@
 #
 # Copyright (c) 2013-2015 Alex Williams, Unscramble. See the LICENSE file (MIT).
 #
-# VERSION: 0.6.0
+# VERSION: 0.6.1
 
 admin_dir="/opt/jidoteki/admin"
 

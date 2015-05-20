@@ -5,7 +5,7 @@
 # Copyright (c) 2013-2015 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # https://unscramble.co.jp
 #
-# VERSION: 0.6.0
+# VERSION: 0.6.1
 
 set -u
 set -e
@@ -15,7 +15,7 @@ uploads_dir="${admin_dir}/home/sftp/uploads"
 network_type=$1
 
 fail_and_exit() {
-  echo "[`date +%s`][VIRTUAL APPLIANCE] Missing settings file(s)" 2>&1 | tee -a "${admin_dir}/log/update.log"
+  echo "[`date +%s`][VIRTUAL APPLIANCE] Invalid or missing network settings file" 2>&1 | tee -a "${admin_dir}/log/update.log"
   exit 1
 }
 
