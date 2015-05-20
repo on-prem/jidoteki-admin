@@ -105,6 +105,7 @@
     - update_vm.sh
     - update_license.sh
     - update_settings.sh
+    - update_token.sh
   tags:
     - admin
 

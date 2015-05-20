@@ -4,7 +4,7 @@
 #
 # Copyright (c) 2013-2015 Alex Williams, Unscramble. See the LICENSE file (MIT).
 #
-# VERSION: 0.5.0
+# VERSION: 0.6.0
 
 admin_dir="/opt/jidoteki/admin"
 
@@ -23,6 +23,9 @@ case "${SSH_ORIGINAL_COMMAND}" in
     ;;
   "settings dhcp")
     sudo ${admin_dir}/bin/update_settings.sh dhcp
+    ;;
+  "token")
+    sudo ${admin_dir}/bin/update_token.sh
     ;;
   *)
     exit 1

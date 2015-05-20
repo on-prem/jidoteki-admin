@@ -5,7 +5,7 @@
 # Copyright (c) 2013-2015 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # https://unscramble.co.jp
 #
-# VERSION: 0.5.0
+# VERSION: 0.6.0
 
 set -u
 set -e
@@ -27,7 +27,7 @@ move_settings_files() {
   if [ ! -f "network.json" ]; then return 1; fi
 
   mv -f network.json ${admin_dir}/etc/
-  chmod 640 "${admin_dir}/etc/network.json" ; chown root:root "${admin_dir}/etc/network.json"
+  chmod 640 "${admin_dir}/etc/network.json" ; chown root:admin "${admin_dir}/etc/network.json"
 }
 
 save_network_settings() {
