@@ -1,1 +1,1 @@
-admin ALL= NOPASSWD: /opt/jidoteki/admin/bin/update_vm.sh
+admin ALL= NOPASSWD: /opt/jidoteki/admin/bin/update_*
