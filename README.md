@@ -49,6 +49,10 @@ Here is what the `admin` role does:
   * Create '/opt/jidoteki/repos' directory structure
   * Run 'reprepro' to generate initial repo database (debian/ubuntu only)
 
+# Changelog
+
+See the [Changelog](CHANGELOG.md).
+
 # License
 
 This project is MIT licensed, see the [LICENSE](LICENSE) file for more info.
