@@ -20,8 +20,8 @@
     src="{{ keypair_path }}/updates.key"
     dest="{{ admin_path }}/etc/updates.key"
     owner=root
-    group=root
-    mode=0600
+    group=admin
+    mode=0640
   tags:
     - admin
 
