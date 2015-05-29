@@ -5,7 +5,7 @@
 # Copyright (c) 2013-2015 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # http://unscramble.co.jp
 #
-# VERSION: 0.6.1
+# VERSION: 0.6.3
 
 set -u
 set -e
@@ -16,6 +16,7 @@ admin_dir="/opt/jidoteki/admin"
 uploads_dir="${admin_dir}/home/sftp/uploads"
 
 fail_and_exit() {
+  echo "failed" > "${admin_dir}/etc/status_update.txt"
   echo "[`date +%s`][VIRTUAL APPLIANCE] Failed updating virtual appliance. Cleaning up.." 2>&1 | tee -a "${admin_dir}/log/update.log"
   exit 1
 }
@@ -141,6 +142,7 @@ trap cleanup EXIT
 trap 'exit 127' INT
 
 # Run all the tasks
+echo "running" > "${admin_dir}/etc/status_update.txt"
 echo "[`date +%s`][VIRTUAL APPLIANCE] Updating virtual appliance. Please wait.." 2>&1 | tee -a "${admin_dir}/log/update.log"
 
 find_latest_package       && \
@@ -149,5 +151,6 @@ extract_software_package  && \
 compare_versions          && \
 update_appliance          || fail_and_exit
 
+echo "success" > "${admin_dir}/etc/status_update.txt"
 echo "[`date +%s`][VIRTUAL APPLIANCE] Update successful" 2>&1 | tee -a "${admin_dir}/log/update.log"
 exit 0

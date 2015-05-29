@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.3 (2015-05-29)
+
+  * Store the status of the update in a file
+
 ## 0.6.2 (2015-05-28)
 
   * Allow a user in the 'admin' group to read the updates.key
