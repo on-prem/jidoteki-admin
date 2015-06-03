@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.0 (2015-06-03)
+
+  * Add 'api' role to install the Jidoteki Admin API
+
 ## 0.6.3 (2015-05-29)
 
   * Store the status of the update in a file

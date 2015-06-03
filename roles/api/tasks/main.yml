@@ -1,0 +1,101 @@
+# Jidoteki Admin API tasks
+
+- name: Download the Jidoteki API
+  command: >
+    chdir=/tmp
+    creates=/tmp/jidoteki-admin-api.tar.gz
+    curl -L -o jidoteki-admin-api.tar.gz https://github.com/unscramble/jidoteki-admin-api/archive/v{{ api_version }}.tar.gz
+  tags:
+    - api
+    - tgz
+
+- name: Upload the API sha1 checksum to /tmp/
+  template: >
+    src=api.sha1.j2
+    dest=/tmp/api.sha1
+    owner=root
+    group=root
+    mode=0644
+  tags:
+    - api
+    - sha1
+
+- name: Verify hash of the API and install it in /opt/jidoteki/api
+  shell: >
+    chdir=/tmp
+    sha1sum -c /tmp/api.sha1 && tar -zxf jidoteki-admin-api.tar.gz && mv jidoteki-admin-api-{{ api_version }} {{ api_path }}
+  tags:
+    - api
+    - sha1
+
+- name: Create '/opt/jidoteki/api/.lib' directory
+  file: >
+    state=directory
+    path={{ api_path }}/.lib
+    owner=root
+    group=root
+    mode=0755
+  tags:
+    - api
+    - dirs
+
+- name: Build the API dependencies
+  shell: >
+    chdir={{ api_path }}
+    make
+  tags:
+    - api
+    - build
+
+- name: Download the PicoLisp dependency
+  command: >
+    chdir=/tmp
+    creates=/tmp/picoLisp.gz
+    curl -L -o picoLisp.tgz http://software-lab.de/picoLisp-{{ picolisp_version }}.tgz
+  tags:
+    - api
+    - picolisp
+    - tgz
+
+- name: Upload the PicoLisp sha1 checksum to /tmp/
+  template: >
+    src=picolisp.sha1.j2
+    dest=/tmp/picolisp.sha1
+    owner=root
+    group=root
+    mode=0644
+  tags:
+    - api
+    - picolisp
+    - sha1
+
+- name: Verify hash of the PicoLisp and install it in /opt/jidoteki/api/.lib
+  shell: >
+    chdir=/tmp
+    sha1sum -c /tmp/picolisp.sha1 && tar -xf picoLisp.tgz && mv picoLisp {{ api_path }}/.lib/picolisp
+  tags:
+    - api
+    - picolisp
+    - sha1
+
+- name: Build PicoLisp 64-bit
+  shell: >
+    chdir={{ api_path }}/.lib/picolisp/src64
+    make
+  tags:
+    - api
+    - picolisp
+    - build
+
+- name: Cleanup temp files
+  file: >
+    dest={{ item }}
+    state=absent
+  with_items:
+    - /tmp/jidoteki-admin-api.tar.gz
+    - /tmp/api.sha1
+    - /tmp/picoLisp.tgz
+    - /tmp/picolisp.sha1
+  tags:
+    - api
+    - cleanup

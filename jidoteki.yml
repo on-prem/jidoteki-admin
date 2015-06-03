@@ -7,3 +7,4 @@
   roles:
     - system
     - admin
+    - api

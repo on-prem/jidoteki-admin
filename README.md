@@ -10,10 +10,11 @@ This repository contains bash scripts, ansible roles, and other files needed to 
 
 ## Ansible roles
 
-There are currently 2 roles executed in the following order:
+There are currently 3 roles executed in the following order:
 
   - system
   - admin
+  - api
 
 ### system role
 
@@ -48,6 +49,17 @@ Here is what the `admin` role does:
   * Add SSH admin wrapper script
   * Create '/opt/jidoteki/repos' directory structure
   * Run 'reprepro' to generate initial repo database (debian/ubuntu only)
+
+### api role
+
+The `api` role installs the [jidoteki-admin-api](https://github.com/unscramble/jidoteki-admin-api) in `/opt/jidoteki/api`
+
+Here is what the `api` role does:
+
+  * Download and extract the API into `/opt/jidoteki/api`
+  * Download and extract the dependencies into `/opt/jidoteki/api/.lib/`
+  * Compile the dependency binaries
+  * Run the `make` script to fetch the API dependencies
 
 # Changelog
 
