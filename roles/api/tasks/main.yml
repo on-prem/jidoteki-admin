@@ -1,6 +1,6 @@
 # Jidoteki Admin API tasks
 
-- name: Download the Jidoteki API
+- name: Download the Jidoteki Admin API
   command: >
     chdir=/tmp
     creates=/tmp/jidoteki-admin-api.tar.gz
@@ -9,21 +9,10 @@
     - api
     - tgz
 
-- name: Upload the API sha1 checksum to /tmp/
-  template: >
-    src=api.sha1.j2
-    dest=/tmp/api.sha1
-    owner=root
-    group=root
-    mode=0644
-  tags:
-    - api
-    - sha1
-
-- name: Verify hash of the API and install it in /opt/jidoteki/api
+- name: Install the API in /opt/jidoteki/api
   shell: >
     chdir=/tmp
-    sha1sum -c /tmp/api.sha1 && tar -zxf jidoteki-admin-api.tar.gz && mv jidoteki-admin-api-{{ api_version }} {{ api_path }}
+    tar -zxf jidoteki-admin-api.tar.gz && mv jidoteki-admin-api-{{ api_version }} {{ api_path }}
   tags:
     - api
     - sha1
