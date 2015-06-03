@@ -108,6 +108,7 @@
     - update_token.sh
   tags:
     - admin
+    - updated
 
 - name: Add SSH admin wrapper script
   copy: >
@@ -118,6 +119,18 @@
     mode=0750
   tags:
     - admin
+    - updated
+
+- name: Ensure the updates key has the proper permissions
+  file: >
+    state=file
+    path="{{ admin_path }}/etc/updates.key"
+    owner=root
+    group=admin
+    mode=0640
+  tags:
+    - admin
+    - updated
 
 - include: repos_debian.yml
 - include: repos_centos.yml
