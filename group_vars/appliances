@@ -5,4 +5,4 @@ local_repo_path: /opt/jidoteki/repos
 api_path: /opt/jidoteki/api
 api_version: 1.0.0
 picolisp_version: 3.1.10
-picolisp_sha1: a6257c0dea0af1b1632a55b25b5bcceeda155927
+picolisp_sha1: 775d981a86a5ff96b7b4d61e699236ad096f66ee
