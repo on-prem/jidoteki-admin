@@ -3,6 +3,7 @@
 ## 0.7.0 (2015-06-03)
 
   * Add 'api' role to install the Jidoteki Admin API
+  * Add task to update the 'updates.key' file permissions
 
 ## 0.6.3 (2015-05-29)
 
