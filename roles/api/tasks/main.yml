@@ -88,4 +88,5 @@
     - picolisp.sha1
   tags:
     - api
+    - picolisp
     - cleanup
