@@ -1,0 +1,92 @@
+# Jidoteki Admin API tasks
+
+- name: Download the Jidoteki Admin API
+  command: >
+    chdir={{ admin_path }}/tmp/update
+    creates={{ admin_path }}/tmp/update/jidoteki-admin-api.tar.gz
+    curl -L -O https://github.com/unscramble/jidoteki-admin-api/archive/v{{ api_version }}.tar.gz
+  when: ansible_connection == "ssh"
+  tags:
+    - api
+    - tgz
+
+- name: Install the API in /opt/jidoteki/api
+  shell: >
+    chdir={{ admin_path }}/tmp/update
+    tar -zxf v{{ api_version }}.tar.gz && rm -rf {{ api_path }} && mv jidoteki-admin-api-{{ api_version }} {{ api_path }}
+  tags:
+    - api
+    - sha1
+
+- name: Create '/opt/jidoteki/api/.lib' directory
+  file: >
+    state=directory
+    path={{ api_path }}/.lib
+    owner=root
+    group=root
+    mode=0755
+  tags:
+    - api
+    - dirs
+
+- name: Build the API dependencies
+  shell: >
+    chdir={{ api_path }}
+    make
+  tags:
+    - api
+    - build
+
+- name: Download the PicoLisp dependency
+  command: >
+    chdir={{ admin_path }}/tmp/update
+    creates={{ admin_path }}/tmp/update/picoLisp-{{ picolisp_version }}.tgz
+    curl -L -O http://software-lab.de/picoLisp-{{ picolisp_version }}.tgz
+  when: ansible_connection == "ssh"
+  tags:
+    - api
+    - picolisp
+    - tgz
+
+- name: Upload the PicoLisp sha1 checksum to /opt/jidoteki/admin/tmp/update/
+  template: >
+    src=picolisp.sha1.j2
+    dest={{ admin_path }}/tmp/update/picolisp.sha1
+    owner=root
+    group=root
+    mode=0644
+  tags:
+    - api
+    - picolisp
+    - sha1
+
+- name: Verify hash of the PicoLisp and install it in /opt/jidoteki/api/.lib
+  shell: >
+    chdir={{ admin_path }}/tmp/update
+    sha1sum -c {{ admin_path }}/tmp/update/picolisp.sha1 && tar -xf picoLisp-{{ picolisp_version }}.tgz && rm -rf {{ api_path }}/.lib/picolisp && mv picoLisp {{ api_path }}/.lib/picolisp
+  tags:
+    - api
+    - picolisp
+    - sha1
+
+- name: Build PicoLisp 64-bit
+  shell: >
+    chdir={{ api_path }}/.lib/picolisp/src64
+    make
+  tags:
+    - api
+    - picolisp
+    - build
+
+- name: Cleanup temp files
+  file: >
+    dest={{ admin_path }}/tmp/update/{{ item }}
+    state=absent
+  with_items:
+    - "v{{ api_version }}.tar.gz"
+    - "picoLisp-{{ picolisp_version }}.tgz"
+    - picolisp.sha1
+  tags:
+    - api
+    - picolisp
+    - cleanup
