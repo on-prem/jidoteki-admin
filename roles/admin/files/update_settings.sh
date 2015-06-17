@@ -5,7 +5,7 @@
 # Copyright (c) 2013-2015 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # https://unscramble.co.jp
 #
-# VERSION: 0.7.0
+# VERSION: 0.8.0
 
 set -u
 set -e
@@ -15,7 +15,7 @@ uploads_dir="${admin_dir}/home/sftp/uploads"
 network_type=$1
 
 fail_and_exit() {
-  echo "[`date +%s`][VIRTUAL APPLIANCE] Invalid or missing network settings file" 2>&1 | tee -a "${admin_dir}/log/update.log"
+  echo "[`date +%s`][VIRTUAL APPLIANCE] Invalid or missing settings file" 2>&1 | tee -a "${admin_dir}/log/update.log"
   exit 1
 }
 
@@ -24,22 +24,31 @@ fail_and_exit() {
 move_settings_files() {
   cd "${uploads_dir}"
 
-  if [ ! -f "network.json" ]; then return 1; fi
+  if [[ ! -f "app.json" && ! -f "network.json" ]]; then return 1; fi
 
-  mv -f network.json ${admin_dir}/etc/
-  chmod 640 "${admin_dir}/etc/network.json" ; chown root:admin "${admin_dir}/etc/network.json"
+  if [ -f "app.json" ]; then
+    mv -f app.json ${admin_dir}/etc/
+    chmod 640 "${admin_dir}/etc/app.json" ; chown root:admin "${admin_dir}/etc/app.json"
+  fi
+
+  if [ -f "network.json" ]; then
+    mv -f network.json ${admin_dir}/etc/
+    chmod 640 "${admin_dir}/etc/network.json" ; chown root:admin "${admin_dir}/etc/network.json"
+  fi
 }
 
 save_network_settings() {
-  echo "\n  Applying network settings.."
-  echo "Starting network settings update at: `date`" >> ${admin_dir}/log/network_setup.log
-  cd ${admin_dir}/ansible
-    if [ "$network_type" = "dhcp" ]; then
-      ansible-playbook ansible.yml --tags=network_setup,dhcp --skip-tags=static >> ${admin_dir}/log/network_setup.log 2>&1
-    else
-      ansible-playbook ansible.yml --tags=network_setup,static --skip-tags=dhcp >> ${admin_dir}/log/network_setup.log 2>&1
-    fi
-  echo "Ended network settings update at: `date`" >> ${admin_dir}/log/network_setup.log
+  if [ -f "${admin_dir}/etc/network.json" ]; then
+    echo "\n  Applying network settings.."
+    echo "Starting network settings update at: `date`" >> ${admin_dir}/log/network_setup.log
+    cd ${admin_dir}/ansible
+      if [ "$network_type" = "dhcp" ]; then
+        ansible-playbook ansible.yml --tags=network_setup,dhcp --skip-tags=static >> ${admin_dir}/log/network_setup.log 2>&1
+      else
+        ansible-playbook ansible.yml --tags=network_setup,static --skip-tags=dhcp >> ${admin_dir}/log/network_setup.log 2>&1
+      fi
+    echo "Ended network settings update at: `date`" >> ${admin_dir}/log/network_setup.log
+  fi
 }
 
 ################

@@ -1,9 +1,31 @@
 # Jidoteki Admin API tasks
 
+- name: Ensure gcc is installed (yum)
+  yum: name=gcc state=latest
+  tags:
+   - centos
+
+- name: Ensure gcc is installed (apt)
+  apt: name=gcc state=latest
+  tags:
+   - debian
+   - ubuntu
+
+- name: Ensure the tmp/update dir exists
+  file: >
+    state=directory
+    path={{ admin_path }}/tmp/update
+    owner=root
+    group=root
+    mode=0755
+  tags:
+    - api
+    - dirs
+
 - name: Download the Jidoteki Admin API
   command: >
     chdir={{ admin_path }}/tmp/update
-    creates={{ admin_path }}/tmp/update/jidoteki-admin-api.tar.gz
+    creates={{ admin_path }}/tmp/update/v{{ api_version }}.tar.gz
     curl -L -O https://github.com/unscramble/jidoteki-admin-api/archive/v{{ api_version }}.tar.gz
   when: ansible_connection == "ssh"
   tags:
@@ -48,6 +70,17 @@
     - picolisp
     - tgz
 
+- name: Download the PicoLisp 64-bit .s files
+  command: >
+    chdir={{ admin_path }}/tmp/update
+    creates={{ admin_path }}/tmp/update/x86-64.linux.tgz
+    curl -L -O http://software-lab.de/x86-64.linux.tgz
+  when: ansible_connection == "ssh"
+  tags:
+    - api
+    - picolisp
+    - tgz
+
 - name: Upload the PicoLisp sha1 checksum to /opt/jidoteki/admin/tmp/update/
   template: >
     src=picolisp.sha1.j2
@@ -63,7 +96,7 @@
 - name: Verify hash of the PicoLisp and install it in /opt/jidoteki/api/.lib
   shell: >
     chdir={{ admin_path }}/tmp/update
-    sha1sum -c {{ admin_path }}/tmp/update/picolisp.sha1 && tar -xf picoLisp-{{ picolisp_version }}.tgz && rm -rf {{ api_path }}/.lib/picolisp && mv picoLisp {{ api_path }}/.lib/picolisp
+    sha1sum -c {{ admin_path }}/tmp/update/picolisp.sha1 && tar -xf picoLisp-{{ picolisp_version }}.tgz && tar -xf x86-64.linux.tgz && mv -f src64/* picoLisp/src64/ && rm -rf {{ api_path }}/.lib/picolisp && mv picoLisp {{ api_path }}/.lib/picolisp
   tags:
     - api
     - picolisp
@@ -86,6 +119,8 @@
     - "v{{ api_version }}.tar.gz"
     - "picoLisp-{{ picolisp_version }}.tgz"
     - picolisp.sha1
+    - x86-64.linux.tgz
+    - src64
   tags:
     - api
     - picolisp
