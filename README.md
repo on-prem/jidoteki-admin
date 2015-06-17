@@ -8,6 +8,12 @@ This repository contains bash scripts, ansible roles, and other files needed to 
 
 [![GitHub tag](https://img.shields.io/github/tag/unscramble/jidoteki-admin.svg)](https://jidoteki.com)
 
+## Requirements
+
+* Ansible 1.5.x
+* curl
+* sha1sum (from core-utils)
+
 ## Ansible roles
 
 There are currently 3 roles executed in the following order:

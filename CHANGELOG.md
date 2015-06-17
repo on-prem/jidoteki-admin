@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.1 (2015-06-12)
+
+  * Fix filename of downloaded jidoteki-admin-api
+  * Add requirements to README.md
+  * Fix build for 64-bit deps
+  * Ensure gcc dependency is installed
+
 ## 0.7.0 (2015-06-03)
 
   * Add 'api' role to install the Jidoteki Admin API
