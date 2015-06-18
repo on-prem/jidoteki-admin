@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.2 (2015-06-18)
+
+  * Ensure the dependency file ownership isn't preserved on install
+
 ## 0.8.1 (2015-06-18)
 
   * Update 'jidoteki-admin-api' to v1.0.1

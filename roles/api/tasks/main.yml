@@ -96,7 +96,7 @@
 - name: Verify hash of the PicoLisp and install it in /opt/jidoteki/api/.lib
   shell: >
     chdir={{ admin_path }}/tmp/update
-    sha1sum -c {{ admin_path }}/tmp/update/picolisp.sha1 && tar -xf picoLisp-{{ picolisp_version }}.tgz && tar -xf x86-64.linux.tgz && mv -f src64/* picoLisp/src64/ && rm -rf {{ api_path }}/.lib/picolisp && mv picoLisp {{ api_path }}/.lib/picolisp
+    sha1sum -c {{ admin_path }}/tmp/update/picolisp.sha1 && tar -xf --no-same-owner picoLisp-{{ picolisp_version }}.tgz && tar -xf --no-same-owner x86-64.linux.tgz && mv -f src64/* picoLisp/src64/ && rm -rf {{ api_path }}/.lib/picolisp && mv picoLisp {{ api_path }}/.lib/picolisp
   tags:
     - api
     - picolisp
