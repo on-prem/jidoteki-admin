@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.3 (2015-06-18)
+
+  * Ensure uploads directory has 0770 permissions
+
 ## 0.8.2 (2015-06-18)
 
   * Ensure the dependency file ownership isn't preserved on install

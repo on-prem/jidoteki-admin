@@ -87,7 +87,7 @@
     path={{ item }}
     owner=sftpadmin
     group=admin
-    mode=0750
+    mode=0770
     recurse=no
   with_items:
     - "{{ admin_path }}/home/sftp/uploads"
