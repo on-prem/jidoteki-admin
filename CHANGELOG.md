@@ -3,6 +3,7 @@
 ## 0.8.3 (2015-06-18)
 
   * Ensure uploads directory has 0770 permissions
+  * Ensure the 'stunnel.log' file exists
 
 ## 0.8.2 (2015-06-18)
 

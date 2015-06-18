@@ -51,6 +51,17 @@
     - api
     - dirs
 
+- name: Create '/opt/jidoteki/api/stunnel.log' file
+  file: >
+    state=file
+    path={{ api_path }}/stunnel.log
+    owner=root
+    group=admin
+    mode=0660
+  tags:
+    - api
+    - files
+
 - name: Build the API dependencies
   shell: >
     chdir={{ api_path }}
