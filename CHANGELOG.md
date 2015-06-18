@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.1 (2015-06-18)
+
+  * Update 'jidoteki-admin-api' to v1.0.1
+
 ## 0.8.0 (2015-06-17)
 
   * Update the 'app.json' if it was uploaded
