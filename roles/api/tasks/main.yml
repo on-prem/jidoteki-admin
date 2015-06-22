@@ -62,6 +62,17 @@
     - api
     - files
 
+- name: Ensure temporary .pil directory exists
+  file: >
+    state=directory
+    path=/opt/jidoteki/admin/home/.pil
+    owner=root
+    group=admin
+    mode=0775
+  tags:
+    - api
+    - files
+
 - name: Build the API dependencies
   shell: >
     chdir={{ api_path }}

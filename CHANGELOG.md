@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.4 (2015-06-22)
+
+  * Ensure temporary '.pil' directory exists
+
 ## 0.8.3 (2015-06-18)
 
   * Ensure uploads directory has 0770 permissions

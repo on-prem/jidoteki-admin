@@ -3,6 +3,6 @@
 admin_path: /opt/jidoteki/admin
 local_repo_path: /opt/jidoteki/repos
 api_path: /opt/jidoteki/api
-api_version: 1.0.1
+api_version: 1.0.2
 picolisp_version: 3.1.10
 picolisp_sha1: 775d981a86a5ff96b7b4d61e699236ad096f66ee
