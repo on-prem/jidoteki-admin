@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.0 (2015-07-06)
+
+  * Add 'logs' command to fetch logs from the appliance
+  * Add 'update_logs.sh' script to fetch compressed log files
+  * Update API and dependency version
+
 ## 0.8.4 (2015-06-22)
 
   * Ensure temporary '.pil' directory exists

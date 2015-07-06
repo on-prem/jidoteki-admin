@@ -5,7 +5,7 @@
 # Copyright (c) 2013-2015 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # https://unscramble.co.jp
 #
-# VERSION: 0.8.0
+# VERSION: 0.9.0
 
 admin_dir="/opt/jidoteki/admin"
 
@@ -27,6 +27,11 @@ case "${SSH_ORIGINAL_COMMAND}" in
     ;;
   "token")
     sudo ${admin_dir}/bin/update_token.sh
+    ;;
+  "logs")
+    if [ -f "${admin_dir}/etc/logs.txt" ]; then
+      sudo ${admin_dir}/bin/update_logs.sh "$(cat ${admin_dir}/etc/logs.txt)";
+    fi
     ;;
   *)
     exit 1
