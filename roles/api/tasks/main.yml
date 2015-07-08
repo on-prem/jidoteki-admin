@@ -27,7 +27,6 @@
     chdir={{ admin_path }}/tmp/update
     creates={{ admin_path }}/tmp/update/v{{ api_version }}.tar.gz
     curl -L -O https://github.com/unscramble/jidoteki-admin-api/archive/v{{ api_version }}.tar.gz
-  when: ansible_connection == "ssh"
   tags:
     - api
     - tgz
@@ -86,7 +85,6 @@
     chdir={{ admin_path }}/tmp/update
     creates={{ admin_path }}/tmp/update/picoLisp-{{ picolisp_version }}.tgz
     curl -L -O http://software-lab.de/picoLisp-{{ picolisp_version }}.tgz
-  when: ansible_connection == "ssh"
   tags:
     - api
     - picolisp
@@ -97,7 +95,6 @@
     chdir={{ admin_path }}/tmp/update
     creates={{ admin_path }}/tmp/update/x86-64.linux.tgz
     curl -L -O http://software-lab.de/x86-64.linux.tgz
-  when: ansible_connection == "ssh"
   tags:
     - api
     - picolisp
