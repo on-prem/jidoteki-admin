@@ -11,6 +11,19 @@
    - debian
    - ubuntu
 
+- name: Backup important files
+  shell: >
+    chdir={{ api_path }}
+    mkdir -p {{ admin_path }}/tmp/update/.backup && cp -rp {{ item }} {{ admin_path }}/tmp/update/.backup/{{ item }}
+  ignore_errors: true
+  with_items:
+    - enterprise.pem
+    - stunnel.log
+    - stunnel.conf
+  tags:
+    - api
+    - backup
+
 - name: Ensure the tmp/update dir exists
   file: >
     state=directory
@@ -130,6 +143,19 @@
     - picolisp
     - build
 
+- name: Restore important files
+  shell: >
+    chdir={{ api_path }}
+    cp -rp {{ admin_path }}/tmp/update/.backup/{{ item }} {{ api_path }}/{{ item }}
+  ignore_errors: true
+  with_items:
+    - enterprise.pem
+    - stunnel.log
+    - stunnel.conf
+  tags:
+    - api
+    - backup
+
 - name: Cleanup temp files
   file: >
     dest={{ admin_path }}/tmp/update/{{ item }}
@@ -140,6 +166,7 @@
     - picolisp.sha1
     - x86-64.linux.tgz
     - src64
+    - .backup
   tags:
     - api
     - picolisp
