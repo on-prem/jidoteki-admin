@@ -85,10 +85,28 @@
     - api
     - files
 
+- name: Download the API dependencies (unit)
+  command: >
+    chdir={{ admin_path }}/tmp/update
+    creates={{ admin_path }}/tmp/update/picolisp-unit.git
+    git clone https://github.com/aw/picolisp-unit.git picolisp-unit.git
+  tags:
+    - api
+    - build
+
+- name: Download the API dependencies (json)
+  command: >
+    chdir={{ admin_path }}/tmp/update
+    creates={{ admin_path }}/tmp/update/picolisp-json.git
+    git clone https://github.com/aw/picolisp-json.git picolisp-json.git
+  tags:
+    - api
+    - build
+
 - name: Build the API dependencies
   shell: >
     chdir={{ api_path }}
-    make
+    REPO_PREFIX={{ admin_path }}/tmp/update make
   tags:
     - api
     - build
