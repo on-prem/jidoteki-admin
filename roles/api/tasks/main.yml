@@ -106,7 +106,7 @@
 - name: Build the API dependencies
   shell: >
     chdir={{ api_path }}
-    REPO_PREFIX={{ admin_path }}/tmp/update make
+    REPO_PREFIX=file://{{ admin_path }}/tmp/update make
   tags:
     - api
     - build
