@@ -175,15 +175,12 @@
     - backup
 
 - name: Fix permissions on directories
-  file: >
-    dest={{ api_path }}/{{ item }}
-    state=directory
-    owner=root
-    group=admin
-    recurse=yes
-  with_items:
-    - .lib
-    - .modules
+  command: >
+    chdir={{ api_path }}
+    chown -R root:admin .lib .modules
+  tags:
+    - api
+    - permissions
 
 - name: Cleanup temp files
   file: >
