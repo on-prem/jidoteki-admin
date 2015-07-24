@@ -85,6 +85,15 @@
     - api
     - files
 
+- name: Download the API dependencies (parson)
+  command: >
+    chdir={{ admin_path }}/tmp/update
+    creates={{ admin_path }}/tmp/update/parson.git
+    git clone https://github.com/aw/parson.git parson.git
+  tags:
+    - api
+    - build
+
 - name: Download the API dependencies (unit)
   command: >
     chdir={{ admin_path }}/tmp/update

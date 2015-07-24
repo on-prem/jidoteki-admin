@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.1 (2015-07-24)
+
+  * Add 'parson' as a dependency during build
+
 ## 0.9.0 (2015-07-06)
 
   * Add 'logs' command to fetch logs from the appliance
