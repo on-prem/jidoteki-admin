@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.2 (2015-08-21)
+
+  * Update 'jidoteki-admin-api' to v1.1.6
+
 ## 0.9.1 (2015-07-24)
 
   * Add 'parson' as a dependency during build
