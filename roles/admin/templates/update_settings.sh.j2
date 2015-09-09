@@ -1,0 +1,53 @@
+#!/bin/sh
+#
+# Generic script for updating the network and app settings
+#
+# Copyright (c) 2013-2015 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# https://unscramble.co.jp
+#
+# VERSION: 1.0.0
+
+set -u
+set -e
+
+admin_dir="{{ admin_path }}"
+uploads_dir="${admin_dir}/home/sftp/uploads"
+network_type=$1
+
+fail_and_exit() {
+  echo "[`date +%s`][{{ admin_type }}] Invalid or missing settings file" 2>&1 | tee -a "${admin_dir}/log/update.log"
+  exit 1
+}
+
+################
+
+move_settings_files() {
+  cd "${uploads_dir}"
+
+  if [[ ! -f "app.json" && ! -f "network.json" ]]; then return 1; fi
+
+  if [ -f "app.json" ]; then
+    mv -f app.json ${admin_dir}/etc/
+    chmod 640 "${admin_dir}/etc/app.json" ; chown root:admin "${admin_dir}/etc/app.json"
+  fi
+
+  if [ -f "network.json" ]; then
+    mv -f network.json ${admin_dir}/etc/
+    chmod 640 "${admin_dir}/etc/network.json" ; chown root:admin "${admin_dir}/etc/network.json"
+  fi
+}
+
+save_network_settings() {
+  ${admin_dir}/bin/network.sh $network_type || return 1
+}
+
+################
+
+# Run all the tasks
+echo "[`date +%s`][{{ admin_type }}] Updating settings. Please wait.." 2>&1 | tee -a "${admin_dir}/log/update.log"
+
+move_settings_files && \
+save_network_settings || fail_and_exit
+
+echo "[`date +%s`][{{ admin_type }}] Updating settings successful" 2>&1 | tee -a "${admin_dir}/log/update.log"
+exit 0

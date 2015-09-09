@@ -1,8 +1,8 @@
-# Jidoteki virtual appliance administration
+# Jidoteki virtual appliance & live image administration
 
 [Jidoteki](https://jidoteki.com) installs the `Jidoteki Admin` package in `/opt/jidoteki`.
 
-This repository contains bash scripts, ansible roles, and other files needed to perform remote virtual appliance administration, updates, etc.
+This repository contains bash scripts, ansible roles, and other files needed to perform remote virtual appliance or live image administration, updates, etc.
 
 ## Version
 
@@ -41,11 +41,11 @@ Here is what the `system` role does:
 
 ### admin role
 
-The `admin` configures directories and files in `/opt/jidoteki/admin`.
+The `admin` configures directories and files in `/opt/jidoteki/admin` or `/opt/jidoteki/tinyadmin`.
 
 Here is what the `admin` role does:
 
-  * Create '/opt/jidoteki/admin' directory structure
+  * Create 'admin' directory structure
   * Copy the secure keyfile used to decrypt software packages
   * Create admin directories only writeable by root
   * Add 'admin/sftpadmin' user's public SSH key
@@ -58,7 +58,7 @@ Here is what the `admin` role does:
 
 ### api role
 
-The `api` role installs the [jidoteki-admin-api](https://github.com/unscramble/jidoteki-admin-api) in `/opt/jidoteki/api`
+The `api` role installs the [jidoteki-admin-api](https://github.com/unscramble/jidoteki-admin-api) in `/opt/jidoteki/api` (virtual appliances only)
 
 Here is what the `api` role does:
 

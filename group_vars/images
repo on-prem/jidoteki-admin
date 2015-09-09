@@ -1,0 +1,6 @@
+# Jidoteki TinyAdmin variables
+
+admin_path: /opt/jidoteki/tinyadmin
+admin_type: LIVE IMAGE
+admin_type_lowcase: live image
+ssh_path: /usr/local/etc/ssh

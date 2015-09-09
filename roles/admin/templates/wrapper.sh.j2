@@ -1,13 +1,13 @@
 #!/bin/sh
 #
-# Wrapper for executing admin commands on a virtual appliance
+# Wrapper for executing admin commands on a {{ admin_type_lowcase }}
 #
 # Copyright (c) 2013-2015 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # https://unscramble.co.jp
 #
-# VERSION: 0.9.0
+# VERSION: 1.0.0
 
-admin_dir="/opt/jidoteki/admin"
+admin_dir="{{ admin_path }}"
 
 case "${SSH_ORIGINAL_COMMAND}" in
   "update")
@@ -15,6 +15,9 @@ case "${SSH_ORIGINAL_COMMAND}" in
     ;;
   "version")
     if [ -f "${admin_dir}/etc/version.txt" ]; then cat ${admin_dir}/etc/version.txt; fi
+    ;;
+  "changelog")
+    if [ -f "${admin_dir}/etc/changelog.txt" ]; then cat ${admin_dir}/etc/changelog.txt; fi
     ;;
   "license")
     sudo ${admin_dir}/bin/update_license.sh

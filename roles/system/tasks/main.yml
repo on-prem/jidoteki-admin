@@ -3,7 +3,6 @@
 - name: Wait for SSH to be available
   local_action: wait_for port="{{ ansible_ssh_port }}" host="{{ inventory_hostname }}" search_regex=OpenSSH delay=60 timeout=300 state=started
   tags:
-    - system
     - debian
     - ubuntu
     - centos
@@ -16,7 +15,6 @@
     line="#Defaults    requiretty"
     regexp="Defaults    requiretty"
   tags:
-    - system
     - debian
     - ubuntu
     - centos
@@ -42,12 +40,11 @@
     - system
 
 - name: Allow the 'admin' user to sudo
-  copy: >
-    src=admin.sudo
-    dest=/etc/sudoers.d/admin
-    owner=root
-    group=root
-    mode=0440
+  lineinfile: >
+    state=present
+    backup=yes
+    dest=/etc/sudoers
+    line="admin ALL= NOPASSWD: {{ admin_path }}/bin/update_*"
   tags:
     - system
 
@@ -58,7 +55,7 @@
     comment="SFTP Admin User"
     createhome=no
     home="{{ admin_path }}/home"
-    shell=/sbin/nologin
+    shell=/bin/false
     group=admin
     system=yes
   tags:
@@ -68,7 +65,7 @@
   lineinfile: >
     state=present
     backup=no
-    dest=/etc/ssh/sshd_config
+    dest={{ ssh_path }}/sshd_config
     regexp="{{ item.regexp }}"
     line="{{ item.line }}"
   with_items:
@@ -89,6 +86,11 @@
   service: name=sshd state=restarted
   tags:
     - centos
+
+- name: Restart the OPENSSH daemon (tinycore)
+  command: /usr/local/etc/init.d/openssh restart
+  tags:
+    - tinycore
 
 - include: repos_debian.yml
 - include: repos_centos.yml

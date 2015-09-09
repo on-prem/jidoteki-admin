@@ -1,23 +1,23 @@
 #!/bin/sh
 #
-# Generic script for updating a virtual appliance
+# Generic script for updating a {{ admin_type_lowcase }}
 #
 # Copyright (c) 2013-2015 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # http://unscramble.co.jp
 #
-# VERSION: 0.9.0
+# VERSION: 1.0.0
 
 set -u
 set -e
 
 tar_cmd=`which tar`
 openssl_cmd=`which openssl`
-admin_dir="/opt/jidoteki/admin"
+admin_dir="{{ admin_path }}"
 uploads_dir="${admin_dir}/home/sftp/uploads"
 
 fail_and_exit() {
   echo "failed" > "${admin_dir}/etc/status_update.txt"
-  echo "[`date +%s`][VIRTUAL APPLIANCE] Failed updating virtual appliance. Cleaning up.." 2>&1 | tee -a "${admin_dir}/log/update.log"
+  echo "[`date +%s`][{{ admin_type }}] Failed updating {{ admin_type_lowcase }}. Cleaning up.." 2>&1 | tee -a "${admin_dir}/log/update.log"
   exit 1
 }
 
@@ -119,7 +119,7 @@ compare_versions() {
   fi
 }
 
-# Update the virtual appliance and log the results
+# Update the {{ admin_type_lowcase }} and log the results
 update_appliance() {
   cd "${admin_dir}/tmp/update"
 
@@ -143,7 +143,7 @@ trap 'exit 127' INT
 
 # Run all the tasks
 echo "running" > "${admin_dir}/etc/status_update.txt"
-echo "[`date +%s`][VIRTUAL APPLIANCE] Updating virtual appliance. Please wait.." 2>&1 | tee -a "${admin_dir}/log/update.log"
+echo "[`date +%s`][{{ admin_type }}] Updating {{ admin_type_lowcase }}. Please wait.." 2>&1 | tee -a "${admin_dir}/log/update.log"
 
 find_latest_package       && \
 decrypt_software_package  && \
@@ -152,5 +152,5 @@ compare_versions          && \
 update_appliance          || fail_and_exit
 
 echo "success" > "${admin_dir}/etc/status_update.txt"
-echo "[`date +%s`][VIRTUAL APPLIANCE] Update successful" 2>&1 | tee -a "${admin_dir}/log/update.log"
+echo "[`date +%s`][{{ admin_type }}] Update successful" 2>&1 | tee -a "${admin_dir}/log/update.log"
 exit 0
