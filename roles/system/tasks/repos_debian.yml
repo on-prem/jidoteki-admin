@@ -11,8 +11,13 @@
     - debian
     - ubuntu
 
-- name: Ensure reprepro tool is installed
-  apt: name=reprepro state=latest
+- name: Ensure deps are installed
+  apt: name={{ item }} state=latest
+  with_items:
+    - reprepro
+    - curl
+    - git-core
+    - make
   tags:
    - debian
    - ubuntu
