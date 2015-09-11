@@ -112,7 +112,7 @@
     - updated
 
 - name: Add SSH admin wrapper script
-  copy: >
+  template: >
     src=wrapper.sh.j2
     dest="{{ admin_path }}/bin/wrapper.sh"
     owner=root
