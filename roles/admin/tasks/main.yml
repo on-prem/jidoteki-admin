@@ -1,6 +1,6 @@
 # Jidoteki Admin tasks
 
-- name: Create '/opt/jidoteki/admin' directory structure
+- name: Create 'admin' directory structure
   file: >
     state=directory
     path={{ item }}
@@ -95,8 +95,8 @@
     - admin
 
 - name: Add SSH admin management scripts
-  copy: >
-    src={{ item }}
+  template: >
+    src={{ item }}.j2
     dest="{{ admin_path }}/bin/{{ item }}"
     owner=root
     group=root
@@ -112,23 +112,12 @@
     - updated
 
 - name: Add SSH admin wrapper script
-  copy: >
-    src=wrapper.sh
+  template: >
+    src=wrapper.sh.j2
     dest="{{ admin_path }}/bin/wrapper.sh"
     owner=root
     group=admin
     mode=0750
-  tags:
-    - admin
-    - updated
-
-- name: Ensure the updates key has the proper permissions
-  file: >
-    state=file
-    path="{{ admin_path }}/etc/updates.key"
-    owner=root
-    group=admin
-    mode=0640
   tags:
     - admin
     - updated

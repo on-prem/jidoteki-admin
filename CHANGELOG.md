@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.0 (2015-09-09)
+
+  * Update 'jidoteki-admin-api' to v1.2.0
+  * Integrate live image management scripts
+  * Make settings more generic by moving tasks to its own script
+  * Add 'changelog' command to fetch the changelog.txt
+
 ## 0.9.2 (2015-08-21)
 
   * Update 'jidoteki-admin-api' to v1.1.6

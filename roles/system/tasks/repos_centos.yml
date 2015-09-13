@@ -10,7 +10,12 @@
   tags:
     - centos
 
-- name: Ensure createrepo tool is installed
-  yum: name=createrepo state=latest
+- name: Ensure deps are installed
+  yum: name={{ item }} state=latest
+  with_items:
+    - createrepo
+    - curl
+    - git
+    - make
   tags:
    - centos
