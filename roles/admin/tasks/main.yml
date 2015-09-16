@@ -15,36 +15,6 @@
   tags:
     - admin
 
-- name: Copy the secure keyfile used to decrypt software update packages
-  copy: >
-    src="{{ keypair_path }}/updates.key"
-    dest="{{ admin_path }}/etc/updates.key"
-    owner=root
-    group=admin
-    mode=0640
-  tags:
-    - admin
-
-- name: Create the initial version.txt file
-  lineinfile: >
-    state=present
-    create=yes
-    line="{{ release_version }}"
-    dest="{{ admin_path }}/etc/version.txt"
-  tags:
-    - admin
-    - version
-
-- name: Set the proper file permissions on the version.txt file
-  file: >
-    state=file
-    path="{{ admin_path }}/etc/version.txt"
-    owner=root
-    group=root
-    mode=0644
-  tags:
-    - admin
-
 - name: Create admin directories only writeable by root
   file: >
     state=directory
@@ -57,27 +27,6 @@
     - "{{ admin_path }}/home"
     - "{{ admin_path }}/home/.ssh"
     - "{{ admin_path }}/home/sftp"
-  tags:
-    - admin
-
-- name: Add 'admin/sftpadmin' user's public SSH key
-  authorized_key: >
-    user=admin
-    key="{{ item }}"
-    key_options='no-pty,command="{{ admin_path }}/bin/wrapper.sh"'
-    manage_dir=no
-  with_file:
-    - "{{ keypair_path }}/admin_ssh_key.pub"
-  tags:
-    - admin
-
-- name: Ensure 'admin/sftpadmin' user can't modify the authorized_keys file
-  file: >
-    state=file
-    path="{{ admin_path }}/home/.ssh/authorized_keys"
-    owner=root
-    group=admin
-    mode=0640
   tags:
     - admin
 

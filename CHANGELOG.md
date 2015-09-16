@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0 (2015-09-16)
+
+  * Remove copying of the 'updates.key'
+  * Remove creation of the 'version.txt'
+  * Remove copying of the admin/sftpadmin SSH public key
+
 ## 1.0.0 (2015-09-09)
 
   * Update 'jidoteki-admin-api' to v1.2.0
