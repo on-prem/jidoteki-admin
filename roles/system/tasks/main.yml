@@ -87,10 +87,5 @@
   tags:
     - centos
 
-- name: Restart the OPENSSH daemon (tinycore)
-  command: /usr/local/etc/init.d/openssh restart
-  tags:
-    - tinycore
-
 - include: repos_debian.yml
 - include: repos_centos.yml

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.1 (2015-09-16)
+
+  * Add a 'prefix' variable for the path in every admin task
+  * Remove reference
+
 ## 1.1.0 (2015-09-16)
 
   * Remove copying of the 'updates.key'
