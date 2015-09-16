@@ -3,7 +3,7 @@
 - name: Create 'admin' directory structure
   file: >
     state=directory
-    path={{ item }}
+    path={{ prefix }}{{ item }}
     owner=root
     group=root
     mode=0755
@@ -18,7 +18,7 @@
 - name: Create admin directories only writeable by root
   file: >
     state=directory
-    path={{ item }}
+    path={{ prefix }}{{ item }}
     owner=root
     group=admin
     mode=0750
@@ -33,7 +33,7 @@
 - name: Create admin sftp uploads directory
   file: >
     state=directory
-    path={{ item }}
+    path={{ prefix }}{{ item }}
     owner=sftpadmin
     group=admin
     mode=0770
@@ -46,7 +46,7 @@
 - name: Add SSH admin management scripts
   template: >
     src={{ item }}.j2
-    dest="{{ admin_path }}/bin/{{ item }}"
+    dest="{{ prefix }}{{ admin_path }}/bin/{{ item }}"
     owner=root
     group=root
     mode=0755
@@ -63,7 +63,7 @@
 - name: Add SSH admin wrapper script
   template: >
     src=wrapper.sh.j2
-    dest="{{ admin_path }}/bin/wrapper.sh"
+    dest="{{ prefix }}{{ admin_path }}/bin/wrapper.sh"
     owner=root
     group=admin
     mode=0750
