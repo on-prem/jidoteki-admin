@@ -15,6 +15,18 @@
   tags:
     - admin
 
+- name: Allow 'admin' to write to certain dirs
+  file: >
+    state=directory
+    path={{ prefix }}{{ item }}
+    owner=root
+    group=admin
+    mode=0775
+  with_items:
+    - "{{ admin_path }}/log"
+  tags:
+    - admin
+
 - name: Create admin directories only writeable by root
   file: >
     state=directory

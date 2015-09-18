@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.2 (2015-09-18)
+
+  * Allow 'admin' to write to certain dirs
+
 ## 1.1.1 (2015-09-16)
 
   * Add a 'prefix' variable for the path in every admin task
