@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1 (2015-09-20)
+
+  * Move 'network.conf' when updating network settings
+
 ## 1.2.0 (2015-09-20)
 
   * Update 'wrapper.sh' to perform a backup after a "destructive" command

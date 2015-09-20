@@ -5,7 +5,7 @@
 # Copyright (c) 2013-2015 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # https://unscramble.co.jp
 #
-# VERSION: 1.2.0
+# VERSION: 1.2.1
 
 set -u
 set -e
@@ -24,7 +24,7 @@ fail_and_exit() {
 move_settings_files() {
   cd "${uploads_dir}"
 
-  if [[ ! -f "app.json" && ! -f "network.json" ]]; then return 1; fi
+  if [[ ! -f "app.json" && ! -f "network.json" && ! -f "network.conf" ]]; then return 1; fi
 
   if [ -f "app.json" ]; then
     mv -f app.json ${admin_dir}/etc/
@@ -34,6 +34,11 @@ move_settings_files() {
   if [ -f "network.json" ]; then
     mv -f network.json ${admin_dir}/etc/
     chmod 640 "${admin_dir}/etc/network.json" ; chown root:admin "${admin_dir}/etc/network.json"
+  fi
+
+  if [ -f "network.conf" ]; then
+    mv -f network.conf /usr/local/etc/
+    chmod 640 "/usr/local/etc/network.conf" ; chown root:admin "/usr/local/etc/network.conf"
   fi
 }
 
