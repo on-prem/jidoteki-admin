@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0 (2015-09-20)
+
+  * Update 'wrapper.sh' to perform a backup after a "destructive" command
+
 ## 1.1.2 (2015-09-18)
 
   * Allow 'admin' to write to certain dirs

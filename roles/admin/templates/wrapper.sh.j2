@@ -5,13 +5,23 @@
 # Copyright (c) 2013-2015 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # https://unscramble.co.jp
 #
-# VERSION: 1.0.0
+# VERSION: 1.2.0
+
+set -u
+set -e
 
 admin_dir="{{ admin_path }}"
 
+backup_data() {
+  if [ -f "/usr/bin/filetool.sh" ]; then
+    sudo /usr/bin/filetool.sh -b -s
+  fi
+}
+
 case "${SSH_ORIGINAL_COMMAND}" in
   "update")
-    sudo ${admin_dir}/bin/update_vm.sh
+    sudo ${admin_dir}/bin/update_vm.sh && \
+    backup_data
     ;;
   "version")
     if [ -f "${admin_dir}/etc/version.txt" ]; then cat ${admin_dir}/etc/version.txt; fi
@@ -20,23 +30,30 @@ case "${SSH_ORIGINAL_COMMAND}" in
     if [ -f "${admin_dir}/etc/changelog.txt" ]; then cat ${admin_dir}/etc/changelog.txt; fi
     ;;
   "license")
-    sudo ${admin_dir}/bin/update_license.sh
+    sudo ${admin_dir}/bin/update_license.sh && \
+    backup_data
     ;;
   "settings static")
-    sudo ${admin_dir}/bin/update_settings.sh static
+    sudo ${admin_dir}/bin/update_settings.sh static && \
+    backup_data
     ;;
   "settings dhcp")
-    sudo ${admin_dir}/bin/update_settings.sh dhcp
+    sudo ${admin_dir}/bin/update_settings.sh dhcp && \
+    backup_data
     ;;
   "token")
-    sudo ${admin_dir}/bin/update_token.sh
+    sudo ${admin_dir}/bin/update_token.sh && \
+    backup_data
     ;;
   "logs")
     if [ -f "${admin_dir}/etc/logs.txt" ]; then
-      sudo ${admin_dir}/bin/update_logs.sh "$(cat ${admin_dir}/etc/logs.txt)";
+      sudo ${admin_dir}/bin/update_logs.sh "$(cat ${admin_dir}/etc/logs.txt)" && \
+      backup_data
     fi
     ;;
   *)
     exit 1
     ;;
 esac
+
+exit 0
