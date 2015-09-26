@@ -51,6 +51,10 @@ case "${SSH_ORIGINAL_COMMAND}" in
       backup_data
     fi
     ;;
+  "reboot")
+    backup_data && \
+    sudo nohup reboot
+    ;;
   *)
     exit 1
     ;;

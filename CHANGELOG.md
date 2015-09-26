@@ -3,6 +3,7 @@
 ## 1.3.0 (2015-09-26)
 
   * Ensure each script logs to its own log file
+  * Add 'reboot' command
 
 ## 1.2.1 (2015-09-20)
 
