@@ -15,7 +15,7 @@ log_file="/tmp/logs.tar.gz"
 log_dirs="${admin_dir}/log ${1}"
 
 fail_and_exit() {
-  echo "[`date +%s`][{{ admin_type }}] Invalid or missing log file" 2>&1 | tee -a "${admin_dir}/log/update.log"
+  echo "[`date +%s`][{{ admin_type }}] Invalid or missing log file" 2>&1 | tee -a "${admin_dir}/log/update_logs.log"
   exit 1
 }
 

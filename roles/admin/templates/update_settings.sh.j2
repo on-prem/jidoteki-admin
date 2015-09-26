@@ -15,7 +15,7 @@ uploads_dir="${admin_dir}/home/sftp/uploads"
 network_type=$1
 
 fail_and_exit() {
-  echo "[`date +%s`][{{ admin_type }}] Invalid or missing settings file" 2>&1 | tee -a "${admin_dir}/log/update.log"
+  echo "[`date +%s`][{{ admin_type }}] Invalid or missing settings file" 2>&1 | tee -a "${admin_dir}/log/update_settings.log"
   exit 1
 }
 
@@ -49,10 +49,10 @@ save_network_settings() {
 ################
 
 # Run all the tasks
-echo "[`date +%s`][{{ admin_type }}] Updating settings. Please wait.." 2>&1 | tee -a "${admin_dir}/log/update.log"
+echo "[`date +%s`][{{ admin_type }}] Updating settings. Please wait.." 2>&1 | tee -a "${admin_dir}/log/update_settings.log"
 
 move_settings_files && \
 save_network_settings || fail_and_exit
 
-echo "[`date +%s`][{{ admin_type }}] Updating settings successful" 2>&1 | tee -a "${admin_dir}/log/update.log"
+echo "[`date +%s`][{{ admin_type }}] Updating settings successful" 2>&1 | tee -a "${admin_dir}/log/update_settings.log"
 exit 0
