@@ -1,2 +1,2 @@
 [images]
-images
+images ansible_python_interpreter=/usr/local/bin/python

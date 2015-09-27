@@ -53,7 +53,7 @@ case "${SSH_ORIGINAL_COMMAND}" in
     ;;
   "reboot")
     backup_data && \
-    sudo nohup reboot
+    sudo reboot
     ;;
   *)
     exit 1

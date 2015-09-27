@@ -44,7 +44,7 @@
     state=present
     backup=yes
     dest=/etc/sudoers
-    line="admin ALL= NOPASSWD: {{ admin_path }}/bin/update_*"
+    line="admin ALL= NOPASSWD: {{ admin_path }}/bin/update_*, /usr/bin/filetool.sh, /sbin/reboot"
   tags:
     - system
 

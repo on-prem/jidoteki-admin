@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.1 (2015-09-27)
+
+  * Sudo reboot doesn't require nohup prefix
+  * Ensure the 'admin' user is allowed to backup and reboot
+
 ## 1.3.0 (2015-09-26)
 
   * Ensure each script logs to its own log file
