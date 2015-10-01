@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.2 (2015-09-30)
+
+  * Fix sorting issue for update packages >= 10. Closes #5
+
 ## 1.3.1 (2015-09-27)
 
   * Sudo reboot doesn't require nohup prefix
