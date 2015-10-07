@@ -27,7 +27,7 @@ move_api_token() {
 
   echo "[`date +%s`][{{ admin_type }}] Updating API token. Please wait.." 2>&1 | tee -a "${admin_dir}/log/update_token.log"
   mv -f api.token ${admin_dir}/etc/
-  chmod 640 "${admin_dir}/etc/api.token" ; chown root:admin "${admin_dir}/etc/api.token"
+  chmod 660 "${admin_dir}/etc/api.token" ; chown root:admin "${admin_dir}/etc/api.token"
   echo "[`date +%s`][{{ admin_type }}] Updating API token successful" 2>&1 | tee -a "${admin_dir}/log/update_token.log"
 }
 

@@ -133,6 +133,10 @@ update_appliance() {
 
     echo "Completed update at: `date`" 2>&1 | tee -a "${admin_dir}/log/update.log"
     rm -rf "${uploads_dir}/${latest_package}"
+  else
+    echo "success" > "${admin_dir}/etc/status_update.txt"
+    echo "[`date +%s`][{{ admin_type }}] No update script found, skipping." 2>&1 | tee -a "${admin_dir}/log/update.log"
+    exit 0
   fi
 }
 

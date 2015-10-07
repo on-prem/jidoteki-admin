@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.3 (2015-10-07)
+
+  * Change permissions on 'api.token' from 0640 to 0660
+  * Output a different log message if no 'update.sh' script exists, exit cleanly
+
 ## 1.3.2 (2015-09-30)
 
   * Fix sorting issue for update packages >= 10. Closes #5
