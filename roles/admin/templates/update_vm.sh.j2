@@ -39,23 +39,18 @@ find_latest_package() {
   if [ ! "$latest_package" ]; then return 1; fi
 }
 
-# Decrypt the update package with the updates.key
+# Decrypt and extract the update package with the updates.key
 decrypt_software_package() {
   cd "${admin_dir}/tmp"
 
-  if [ ! "$latest_package" ]; then return 1; fi
+  [ "$latest_package" ] || return 1
+  [ -d "update" ] || mkdir update
 
-  cp "${uploads_dir}/${latest_package}" "${admin_dir}/tmp/" && \
-  $openssl_cmd aes-256-cbc -d -pass file:"${admin_dir}/etc/updates.key" -in "$latest_package" -a -out software_package.tar
-}
-
-# Extract the software_package
-extract_software_package() {
-  cd "${admin_dir}/tmp"
-
-  mkdir -p update
   umask 027
-  $tar_cmd --no-same-owner --no-same-permissions -xf software_package.tar -C update
+  mv -f "${uploads_dir}/${latest_package}" "${admin_dir}/tmp/" && \
+  $openssl_cmd aes-256-cbc -d -pass file:"${admin_dir}/etc/updates.key" -in "$latest_package" -a | $tar_cmd --no-same-owner --no-same-permissions -zxf - -C update && \
+  rm -f "$latest_package" || return 1
+
 }
 
 # Compare the server and package versions
@@ -131,7 +126,6 @@ update_appliance() {
     ./update.sh || return 1
 
     echo "Completed update at: `date`" 2>&1 | tee -a "${admin_dir}/log/update.log"
-    rm -rf "${uploads_dir}/${latest_package}"
   else
     echo "success" > "${admin_dir}/etc/status_update.txt"
     echo "[`date +%s`][{{ admin_type }}] No update script found, skipping." 2>&1 | tee -a "${admin_dir}/log/update.log"
@@ -150,7 +144,6 @@ echo "[`date +%s`][{{ admin_type }}] Updating {{ admin_type_lowcase }}. Please w
 
 find_latest_package       && \
 decrypt_software_package  && \
-extract_software_package  && \
 compare_versions          && \
 update_appliance          || fail_and_exit
 

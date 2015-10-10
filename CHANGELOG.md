@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.2 (2015-10-10)
+
+  * Space and efficiency improvements: pipe decryted package for extraction
+
 ## 1.4.1 (2015-10-10)
 
   * Fix regression in version sort
