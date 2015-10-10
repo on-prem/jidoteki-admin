@@ -33,7 +33,8 @@ cleanup() {
 find_latest_package() {
   cd "${uploads_dir}"
 
-  latest_package=`ls software_package-*.asc* | sort --version-sort -r | head -n 1`
+  # Note: this requires GNU sort from coreutils
+  latest_package=`ls software_package-*.asc* | /usr/local/bin/sort -V -r | head -n 1`
 
   if [ ! "$latest_package" ]; then return 1; fi
 }
@@ -68,7 +69,7 @@ compare_versions() {
     server_version=`cat ${admin_dir}/etc/version.txt`
 
     # Note: this requires GNU sort from coreutils
-    latest=`/bin/echo -e "$server_version\n$package_version" | sort -V | tail -n 1`
+    latest=`/bin/echo -e "$server_version\n$package_version" | /usr/local/bin/sort -V | tail -n 1`
 
     package_major=`echo $package_version | sed -E "s/$version_regex/\2/"`
     package_minor=`echo $package_version | sed -E "s/$version_regex/\3/"`

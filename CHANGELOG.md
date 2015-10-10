@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.1 (2015-10-10)
+
+  * Fix regression in version sort
+
 ## 1.4.0 (2015-10-08)
 
   * Don't manage the 'version.txt' file in the update_vm script
