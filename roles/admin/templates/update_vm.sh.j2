@@ -128,8 +128,6 @@ update_appliance() {
 
     chmod +x update.sh
     ./update.sh || return 1
-    cat version.txt > "${admin_dir}/etc/version.txt"
-    chmod 644 "${admin_dir}/etc/version.txt" ; chown root:root "${admin_dir}/etc/version.txt"
 
     echo "Completed update at: `date`" 2>&1 | tee -a "${admin_dir}/log/update.log"
     rm -rf "${uploads_dir}/${latest_package}"

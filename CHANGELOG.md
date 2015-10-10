@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.0 (2015-10-08)
+
+  * Don't manage the 'version.txt' file in the update_vm script
+
 ## 1.3.3 (2015-10-07)
 
   * Change permissions on 'api.token' from 0640 to 0660
