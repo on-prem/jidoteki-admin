@@ -9,9 +9,7 @@
     mode=0755
   with_items:
     - "{{ admin_path }}/bin"
-    - "{{ admin_path }}/etc"
     - "{{ admin_path }}/tmp"
-    - "{{ admin_path }}/log"
   tags:
     - admin
 
@@ -24,6 +22,7 @@
     mode=0775
   with_items:
     - "{{ admin_path }}/log"
+    - "{{ admin_path }}/etc"
   tags:
     - admin
 
