@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.0 (2015-11-24)
+
+  * Source /etc/profile for consistent use of 'sort' command
+  * Update to Jidoteki Admin API v1.5.0
+
 ## 1.4.2 (2015-10-10)
 
   * Space and efficiency improvements: pipe decryted package for extraction

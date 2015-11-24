@@ -10,8 +10,11 @@
 set -u
 set -e
 
+source /etc/profile
+
 tar_cmd=`which tar`
 openssl_cmd=`which openssl`
+sort_cmd=`which sort`
 admin_dir="{{ admin_path }}"
 uploads_dir="${admin_dir}/home/sftp/uploads"
 
@@ -34,7 +37,7 @@ find_latest_package() {
   cd "${uploads_dir}"
 
   # Note: this requires GNU sort from coreutils
-  latest_package=`ls software_package-*.asc* | /usr/local/bin/sort -V -r | head -n 1`
+  latest_package=`ls software_package-*.asc* | $sort_cmd -V -r | head -n 1`
 
   if [ ! "$latest_package" ]; then return 1; fi
 }
@@ -64,7 +67,7 @@ compare_versions() {
     server_version=`cat ${admin_dir}/etc/version.txt`
 
     # Note: this requires GNU sort from coreutils
-    latest=`/bin/echo -e "$server_version\n$package_version" | /usr/local/bin/sort -V | tail -n 1`
+    latest=`/bin/echo -e "$server_version\n$package_version" | $sort_cmd -V | tail -n 1`
 
     package_major=`echo $package_version | sed -E "s/$version_regex/\2/"`
     package_minor=`echo $package_version | sed -E "s/$version_regex/\3/"`
