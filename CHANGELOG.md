@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.1 (2015-11-25)
+
+  * Remove unbound variable check from update_vm script
+
 ## 1.5.0 (2015-11-24)
 
   * Source /etc/profile for consistent use of 'sort' command
