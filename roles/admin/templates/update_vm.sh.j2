@@ -2,7 +2,7 @@
 #
 # Generic script for updating a {{ admin_type_lowcase }}
 #
-# Copyright (c) 2013-2015 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# Copyright (c) 2013-2016 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # http://unscramble.co.jp
 #
 # VERSION: {{ jidoteki_admin_version }}
@@ -36,7 +36,7 @@ find_latest_package() {
   cd "${uploads_dir}"
 
   # Note: this requires GNU sort from coreutils
-  latest_package=`ls software_package-*.asc* | $sort_cmd -V -r | head -n 1`
+  latest_package=`ls software_package-*.enc* | $sort_cmd -V -r | head -n 1`
 
   if [ ! "$latest_package" ]; then return 1; fi
 }
@@ -50,7 +50,7 @@ decrypt_software_package() {
 
   umask 027
   mv -f "${uploads_dir}/${latest_package}" "${admin_dir}/tmp/" && \
-  $openssl_cmd aes-256-cbc -d -pass file:"${admin_dir}/etc/updates.key" -in "$latest_package" -a | $tar_cmd --no-same-owner --no-same-permissions -zxf - -C update && \
+  $openssl_cmd aes-256-cbc -d -pass file:"${admin_dir}/etc/updates.key" -in "$latest_package" | $tar_cmd --no-same-owner --no-same-permissions -zxf - -C update && \
   rm -f "$latest_package" || return 1
 
 }

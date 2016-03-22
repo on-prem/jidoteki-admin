@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.0 (2016-03-22)
+
+  * Update script decrypts non base64-encoded software packages
+  * Update to Jidoteki Admin API v1.6.0
+
 ## 1.5.1 (2015-11-25)
 
   * Remove unbound variable check from update_vm script
