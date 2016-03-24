@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.0 (2016-03-24)
+
+  * Add mutex to prevent scripts from running simultaneously
+
 ## 1.6.0 (2016-03-22)
 
   * Update script decrypts non base64-encoded software packages

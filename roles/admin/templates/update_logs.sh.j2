@@ -2,7 +2,7 @@
 #
 # Generic script for retrieving update logs
 #
-# Copyright (c) 2013-2015 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# Copyright (c) 2013-2016 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # https://unscramble.co.jp
 #
 # VERSION: {{ jidoteki_admin_version }}
@@ -10,11 +10,18 @@
 set -u
 set -e
 
+if [ -f "/tmp/update_logs.sh.task" ]; then
+  echo "already running"
+  exit 1
+fi
+touch /tmp/update_logs.sh.task
+
 admin_dir="{{ admin_path }}"
 log_file="/tmp/logs.tar.gz"
 log_dirs="${admin_dir}/log ${1}"
 
 fail_and_exit() {
+  rm -f /tmp/update_logs.sh.task
   echo "[`date +%s`][{{ admin_type }}] Invalid or missing log file" 2>&1 | tee -a "${admin_dir}/log/update_logs.log"
   exit 1
 }
@@ -32,5 +39,7 @@ compress_log_files() {
 ################
 
 compress_log_files || fail_and_exit
+
+rm -f /tmp/update_logs.sh.task
 
 exit 0

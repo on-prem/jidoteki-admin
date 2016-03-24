@@ -2,7 +2,7 @@
 #
 # Generic script for updating the network and app settings
 #
-# Copyright (c) 2013-2015 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# Copyright (c) 2013-2016 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # https://unscramble.co.jp
 #
 # VERSION: {{ jidoteki_admin_version }}
@@ -10,11 +10,18 @@
 set -u
 set -e
 
+if [ -f "/tmp/update_settings.sh.task" ]; then
+  echo "already running"
+  exit 1
+fi
+touch /tmp/update_settings.sh.task
+
 admin_dir="{{ admin_path }}"
 uploads_dir="${admin_dir}/home/sftp/uploads"
 network_type=$1
 
 fail_and_exit() {
+  rm -f /tmp/update_settings.sh.task
   echo "[`date +%s`][{{ admin_type }}] Invalid or missing settings file" 2>&1 | tee -a "${admin_dir}/log/update_settings.log"
   exit 1
 }
@@ -55,4 +62,7 @@ move_settings_files && \
 save_network_settings || fail_and_exit
 
 echo "[`date +%s`][{{ admin_type }}] Updating settings successful" 2>&1 | tee -a "${admin_dir}/log/update_settings.log"
+
+rm -f /tmp/update_settings.sh.task
+
 exit 0

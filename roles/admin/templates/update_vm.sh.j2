@@ -9,6 +9,12 @@
 
 set -e
 
+if [ -f "/tmp/update_vm.sh.task" ]; then
+  echo "already running"
+  exit 1
+fi
+touch /tmp/update_vm.sh.task
+
 source /etc/profile
 
 tar_cmd=`which tar`
@@ -27,6 +33,7 @@ cleanup() {
   cd "${admin_dir}/tmp"
 
   rm -rf software_package* update
+  rm -f /tmp/update_vm.sh.task
 }
 
 ################
