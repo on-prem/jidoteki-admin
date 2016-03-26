@@ -32,7 +32,7 @@ fail_and_exit() {
 cleanup() {
   cd "${admin_dir}/tmp"
 
-  rm -rf software_package* update
+  rm -rf software_package* update extracted
   rm -f /tmp/update_vm.sh.task
 }
 
@@ -54,12 +54,14 @@ decrypt_software_package() {
 
   [ "$latest_package" ] || return 1
   [ -d "update" ] || mkdir update
+  [ -d "extracted" ] || mkdir extracted
 
   umask 027
   mv -f "${uploads_dir}/${latest_package}" "${admin_dir}/tmp/" && \
-  $openssl_cmd aes-256-cbc -d -pass file:"${admin_dir}/etc/updates.key" -in "$latest_package" | $tar_cmd --no-same-owner --no-same-permissions -zxf - -C update && \
-  rm -f "$latest_package" || return 1
-
+  $openssl_cmd aes-256-cbc -d -pass file:"${admin_dir}/etc/updates.key" -in "$latest_package" | $tar_cmd -xf - -C extracted && \
+  $openssl_cmd dgst -sha256 -verify "${admin_dir}/etc/updates.pub" -signature extracted/software_package.tar.gz.sign extracted/software_package.tar.gz && \
+  $tar_cmd --no-same-owner --no-same-permissions -zxf extracted/software_package.tar.gz -C update && \
+  rm -rf extracted "$latest_package" || return 1
 }
 
 # Compare the server and package versions
