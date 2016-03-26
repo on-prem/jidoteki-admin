@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.8.0 (2016-03-26)
+
+  * Add code signing / verification of update packages
+
 ## 1.7.0 (2016-03-24)
 
   * Add mutex to prevent scripts from running simultaneously
