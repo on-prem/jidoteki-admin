@@ -61,7 +61,7 @@ decrypt_software_package() {
   $openssl_cmd aes-256-cbc -d -pass file:"${admin_dir}/etc/updates.key" -in "$latest_package" | $tar_cmd -xf - -C extracted && \
   $openssl_cmd dgst -sha256 -verify "${admin_dir}/etc/updates.pub" -signature extracted/software_package.tar.gz.sign extracted/software_package.tar.gz && \
   $tar_cmd --no-same-owner --no-same-permissions -zxf extracted/software_package.tar.gz -C update && \
-  rm -f extracted "$latest_package" || return 1
+  rm -rf extracted "$latest_package" || return 1
 }
 
 # Compare the server and package versions
