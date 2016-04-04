@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.0 (2016-04-04)
+
+  * Add 'debug' command to generate an encrypted support debug bundle
+
 ## 1.8.0 (2016-03-26)
 
   * Add code signing / verification of update packages

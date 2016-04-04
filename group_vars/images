@@ -5,4 +5,4 @@ admin_type: LIVE IMAGE
 admin_type_lowcase: live image
 ssh_path: /usr/local/etc/ssh
 
-jidoteki_admin_version: 1.8.0
+jidoteki_admin_version: 1.9.0

@@ -1,0 +1,79 @@
+#!/bin/sh
+#
+# Generic script for retrieving an encrypted debug bundle
+#
+# Copyright (c) 2013-2016 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# https://unscramble.co.jp
+#
+# VERSION: {{ jidoteki_admin_version }}
+
+set -u
+set -e
+
+if [ -f "/tmp/update_debug.sh.task" ]; then
+  echo "already running"
+  exit 1
+fi
+touch /tmp/update_debug.sh.task
+
+admin_dir="{{ admin_path }}"
+log_file="logs.tar.gz"
+debug_file="debug.tar.gz"
+debug_commands="$1"
+
+fail_and_exit() {
+  echo "[`date +%s`][{{ admin_type }}] Invalid or missing debug file" 2>&1 | tee -a "${admin_dir}/log/update_debug.log"
+  exit 1
+}
+
+cleanup() {
+  cd "${admin_dir}/tmp"
+
+  rm -rf debug
+  rm -f /tmp/update_debug.sh.task
+}
+
+################
+
+generate_debug_files() {
+  cd "${admin_dir}/tmp"
+
+  [ -d "debug" ] || mkdir debug
+
+  counter=0
+  IFS='
+'
+  for i in $debug_commands; do
+    counter=$(( $counter + 1 ))
+    echo "Creating debug/debug-${counter}.log" 2>&1 | tee -a "${admin_dir}/log/update_debug.log"
+    echo "Running: ${i%%;*}" >> "debug/debug-${counter}.log" 2>&1
+    eval ${i%%;*} >> "debug/debug-${counter}.log" 2>&1
+  done
+}
+
+compress_debug_files() {
+  cd "${admin_dir}/tmp/debug"
+
+  mv -f ${admin_dir}/home/sftp/uploads/${log_file} . && \
+  tar --ignore-failed-read -zcf $debug_file *.log && \
+  openssl rand -base64 32 > debug.key && \
+  openssl rsautl -encrypt -inkey ${admin_dir}/etc/updates.pub -pubin -in debug.key -out debug.key.enc && \
+  openssl enc -aes-256-cbc -salt -in $debug_file -out ${debug_file}.enc -pass file:./debug.key && \
+  openssl enc -aes-256-cbc -salt -in $log_file -out ${log_file}.enc -pass file:./debug.key && \
+  tar -cvf debug-bundle.tar *.enc && \
+  chmod 640 debug-bundle.tar ; chown root:admin debug-bundle.tar && \
+  mv -f debug-bundle.tar ${admin_dir}/home/sftp/uploads/ || return 1
+}
+
+################
+
+trap cleanup EXIT
+trap 'exit 127' INT
+
+echo "[`date +%s`][{{ admin_type }}] Generating compressed debug-bundle.tar. Please wait.." 2>&1 | tee -a "${admin_dir}/log/update_debug.log"
+
+generate_debug_files && \
+compress_debug_files || fail_and_exit
+
+echo "[`date +%s`][{{ admin_type }}] Generated debug bundle successful" 2>&1 | tee -a "${admin_dir}/log/update_debug.log"
+exit 0
