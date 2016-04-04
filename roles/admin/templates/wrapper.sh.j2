@@ -24,10 +24,10 @@ case "${SSH_ORIGINAL_COMMAND}" in
     backup_data
     ;;
   "version")
-    if [ -f "${admin_dir}/etc/version.txt" ]; then cat ${admin_dir}/etc/version.txt; fi
+    [ -f "${admin_dir}/etc/version.txt" ] && cat ${admin_dir}/etc/version.txt
     ;;
   "changelog")
-    if [ -f "${admin_dir}/etc/changelog.txt" ]; then cat ${admin_dir}/etc/changelog.txt; fi
+    [ -f "${admin_dir}/etc/changelog.txt" ] && cat ${admin_dir}/etc/changelog.txt
     ;;
   "license")
     sudo ${admin_dir}/bin/update_license.sh && \
@@ -46,10 +46,7 @@ case "${SSH_ORIGINAL_COMMAND}" in
     backup_data
     ;;
   "logs")
-    if [ -f "${admin_dir}/etc/logs.txt" ]; then
-      sudo ${admin_dir}/bin/update_logs.sh "$(cat ${admin_dir}/etc/logs.txt)" && \
-      backup_data
-    fi
+    [ -f "${admin_dir}/etc/logs.txt" ] && sudo ${admin_dir}/bin/update_logs.sh "$(cat ${admin_dir}/etc/logs.txt)"
     ;;
   "reboot")
     backup_data && \
