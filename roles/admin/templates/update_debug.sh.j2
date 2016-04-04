@@ -54,12 +54,15 @@ generate_debug_files() {
 compress_debug_files() {
   cd "${admin_dir}/tmp/debug"
 
-  mv -f ${admin_dir}/home/sftp/uploads/${log_file} . && \
+  [ -f "${admin_dir}/home/sftp/uploads/${log_file}" ] && { mv -f ${admin_dir}/home/sftp/uploads/${log_file} . || return 1; }
+
   tar --ignore-failed-read -zcf $debug_file *.log && \
   openssl rand -base64 32 > debug.key && \
   openssl rsautl -encrypt -inkey ${admin_dir}/etc/updates.pub -pubin -in debug.key -out debug.key.enc && \
-  openssl enc -aes-256-cbc -salt -in $debug_file -out ${debug_file}.enc -pass file:./debug.key && \
-  openssl enc -aes-256-cbc -salt -in $log_file -out ${log_file}.enc -pass file:./debug.key && \
+  openssl enc -aes-256-cbc -salt -in $debug_file -out ${debug_file}.enc -pass file:./debug.key || return 1
+
+  [ -f "${admin_dir}/home/sftp/uploads/${log_file}" ] && { openssl enc -aes-256-cbc -salt -in $log_file -out ${log_file}.enc -pass file:./debug.key || return 1; }
+
   tar -cvf debug-bundle.tar *.enc && \
   chmod 640 debug-bundle.tar ; chown root:admin debug-bundle.tar && \
   mv -f debug-bundle.tar ${admin_dir}/home/sftp/uploads/ || return 1

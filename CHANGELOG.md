@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.1 (2016-04-04)
+
+  * Only include 'logs.tar.gz' in the debug bundle if it exists
+
 ## 1.9.0 (2016-04-04)
 
   * Add 'debug' command to generate an encrypted support debug bundle
