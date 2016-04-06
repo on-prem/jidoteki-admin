@@ -56,6 +56,10 @@ case "${SSH_ORIGINAL_COMMAND}" in
     [ -f "${admin_dir}/etc/logs.txt" ] && sudo ${admin_dir}/bin/update_logs.sh "$(cat ${admin_dir}/etc/logs.txt)"
     [ -f "${admin_dir}/etc/debug.txt" ] && sudo ${admin_dir}/bin/update_debug.sh "$(cat ${admin_dir}/etc/debug.txt)"
     ;;
+  "certs")
+    sudo ${admin_dir}/bin/update_certs.sh && \
+    backup_data
+    ;;
   *)
     exit 1
     ;;

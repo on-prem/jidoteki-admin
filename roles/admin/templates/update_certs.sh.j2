@@ -1,0 +1,144 @@
+#!/bin/sh
+#
+# Generic script for updating TLS certificates
+#
+# Copyright (c) 2013-2016 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# https://unscramble.co.jp
+#
+# VERSION: {{ jidoteki_admin_version }}
+#
+# Expects appliance.pem, appliance.key, ca.pem
+#
+
+set -u
+set -e
+
+if [ -f "/tmp/update_certs.sh.task" ]; then
+  echo "already running"
+  exit 1
+fi
+touch /tmp/update_certs.sh.task
+
+admin_dir="{{ admin_path }}"
+uploads_dir="${admin_dir}/home/sftp/uploads"
+
+fail_and_exit() {
+  echo "[`date +%s`][{{ admin_type }}] Invalid or missing TLS certificate files" 2>&1 | tee -a "${admin_dir}/log/update_certs.log"
+  exit 1
+}
+
+cleanup() {
+  cd "${admin_dir}/tmp"
+
+  rm -f /tmp/update_certs.sh.task
+}
+
+################
+
+validate_certs() {
+  cd "$uploads_dir"
+
+  [ -f "appliance.pem" ] || return 1
+  [ -f "appliance.key" ] || return 1
+
+  echo "Checking public key: appliance.pem" 2>&1 | tee -a "${admin_dir}/log/update_certs.log"
+  openssl x509 -in appliance.pem -noout -fingerprint || return 1
+
+  echo "Checking private key: appliance.key" 2>&1 | tee -a "${admin_dir}/log/update_certs.log"
+  openssl rsa -in appliance.key -noout -check || return 1
+
+  hash_crt=`openssl x509 -noout -modulus -in appliance.pem | sha256sum`
+  hash_key=`openssl rsa -noout -modulus -in appliance.key | sha256sum`
+
+  echo "Public key SHA256 hash:  $hash_crt" 2>&1 | tee -a "${admin_dir}/log/update_certs.log"
+  echo "Private key SHA256 hash: $hash_key" 2>&1 | tee -a "${admin_dir}/log/update_certs.log"
+
+  if [ ! "$hash_crt" = "$hash_key" ]; then
+    echo "Public/private key SHA256 hash mismatch" 2>&1 | tee -a "${admin_dir}/log/update_certs.log"
+    return 1
+  fi
+}
+
+validate_certs_expiry() {
+  is_expired=`openssl x509 -in appliance.pem -noout -checkend 0 -enddate`
+
+  if [ ! "$?" -eq 0 ]; then
+    echo "WARNING: TLS Certificate is expired: $is_expired" 2>&1 | tee -a "${admin_dir}/log/update_certs.log"
+  fi
+}
+
+validate_ca() {
+  if [ -f "ca.pem" ]; then
+    echo "Checking CA certificate: ca.pem" 2>&1 | tee -a "${admin_dir}/log/update_certs.log"
+    openssl x509 -in ca.pem -noout -fingerprint || return 1
+
+    ca_expired=`openssl x509 -in ca.pem -noout -checkend 0 -enddate`
+    [ ! "$?" -eq 0 ] && echo "WARNING: CA Certificate is expired: $ca_expired" 2>&1 | tee -a "${admin_dir}/log/update_certs.log"
+
+    mv -f ca.pem "${admin_dir}/tmp/enterprise-ca.crt"
+  fi
+}
+
+move_certs() {
+  mv -f appliance.pem "${admin_dir}/tmp/enterprise.crt"
+  mv -f appliance.key "${admin_dir}/tmp/enterprise.key"
+}
+
+generate_ca_bundle() {
+  cd "${admin_dir}/tmp"
+
+  if [ -f "enterprise-ca.crt" ]; then
+    if [ -f "/usr/local/etc/pki/certs/ca-bundle.crt.orig" ]; then
+      cat /usr/local/etc/pki/certs/ca-bundle.crt.orig enterprise-ca.crt > ca-bundle.crt
+      return 0
+    fi
+    [ -f "/etc/ssl/certs/ca-certificates.crt" ] && cat /etc/ssl/certs/ca-certificates.crt enterprise-ca.crt > ca-bundle.crt
+  fi
+}
+
+generate_chained_cert() {
+  cat enterprise.key enterprise.crt > enterprise.pem
+  if [ -f "enterprise-ca.crt" ]; then
+    cat enterprise-ca.crt >> enterprise.pem
+  fi
+}
+
+replace_old_certs() {
+  chmod 0640 enterprise.key enterprise.crt enterprise.pem
+  chown root:staff enterprise.key enterprise.crt
+  chown root:admin enterprise.pem
+
+  mkdir -p /usr/local/etc/pki/tls/private /usr/local/etc/pki/tls/certs /usr/local/etc/pki/tls/cacerts
+
+  mv -f enterprise.key /usr/local/etc/pki/tls/private/
+  mv -f enterprise.crt /usr/local/etc/pki/tls/certs/
+  mv -f enterprise.pem /usr/local/etc/pki/tls/
+
+  if [ -f "enterprise-ca.crt" ]; then
+    chmod 0640 enterprise-ca.crt
+    chown root:staff enterprise-ca.crt
+    mv -f enterprise-ca.crt /usr/local/etc/pki/tls/cacerts/
+    [ -f "ca-bundle.crt" ] && mv -f ca-bundle.crt /usr/local/etc/pki/tls/
+  fi
+}
+
+################
+
+trap cleanup EXIT
+trap 'exit 127' INT
+
+echo "[`date +%s`][{{ admin_type }}] Validating and adding TLS certificates" 2>&1 | tee -a "${admin_dir}/log/update_certs.log"
+
+validate_certs        && \
+validate_certs_expiry && \
+validate_ca           && \
+move_certs            && \
+generate_ca_bundle    && \
+generate_chained_cert && \
+replace_old_certs     || fail_and_exit
+
+# Restart the Jidoteki Admin API if it exists
+[ -f "/usr/local/etc/init.d/jidoteki-admin-api" ] && /usr/local/etc/init.d/jidoteki-admin-api restart
+
+echo "[`date +%s`][{{ admin_type }}] Add TLS certificates successful" 2>&1 | tee -a "${admin_dir}/log/update_certs.log"
+exit 0

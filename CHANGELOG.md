@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.10.0 (2016-04-06)
+
+  * Add 'certs' command to update TLS certificates
+
 ## 1.9.1 (2016-04-04)
 
   * Only include 'logs.tar.gz' in the debug bundle if it exists
