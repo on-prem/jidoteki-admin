@@ -62,11 +62,13 @@
     group=root
     mode=0755
   with_items:
-    - update_vm.sh
+    - update_certs.sh
+    - update_debug.sh
     - update_license.sh
+    - update_logs.sh
     - update_settings.sh
     - update_token.sh
-    - update_logs.sh
+    - update_vm.sh
   tags:
     - admin
     - updated

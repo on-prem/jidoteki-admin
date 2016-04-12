@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.10.2 (2016-04-12)
+
+  * Add missing scripts to ansible run
+
 ## 1.10.1 (2016-04-12)
 
   * Ensure 'certs' logs its status (running/failed/success) to status_certs.txt
