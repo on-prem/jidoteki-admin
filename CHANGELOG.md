@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.10.1 (2016-04-12)
+
+  * Ensure 'certs' logs its status (running/failed/success) to status_certs.txt
+  * Update to Jidoteki Admin API v1.9.0
+
 ## 1.10.0 (2016-04-06)
 
   * Add 'certs' command to update TLS certificates

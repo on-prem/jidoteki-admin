@@ -23,6 +23,7 @@ admin_dir="{{ admin_path }}"
 uploads_dir="${admin_dir}/home/sftp/uploads"
 
 fail_and_exit() {
+  echo "failed" > "${admin_dir}/etc/status_certs.txt"
   echo "[`date +%s`][{{ admin_type }}] Invalid or missing TLS certificate files" 2>&1 | tee -a "${admin_dir}/log/update_certs.log"
   exit 1
 }
@@ -127,6 +128,7 @@ replace_old_certs() {
 trap cleanup EXIT
 trap 'exit 127' INT
 
+echo "running" > "${admin_dir}/etc/status_certs.txt"
 echo "[`date +%s`][{{ admin_type }}] Validating and adding TLS certificates" 2>&1 | tee -a "${admin_dir}/log/update_certs.log"
 
 validate_certs        && \
@@ -140,5 +142,6 @@ replace_old_certs     || fail_and_exit
 # Restart the Jidoteki Admin API if it exists
 [ -f "/usr/local/etc/init.d/jidoteki-admin-api" ] && /usr/local/etc/init.d/jidoteki-admin-api restart
 
+echo "success" > "${admin_dir}/etc/status_certs.txt"
 echo "[`date +%s`][{{ admin_type }}] Add TLS certificates successful" 2>&1 | tee -a "${admin_dir}/log/update_certs.log"
 exit 0
