@@ -46,7 +46,7 @@ The `admin` configures directories and files in `/opt/jidoteki/admin` or `/opt/j
 Here is what the `admin` role does:
 
   * Create 'admin' directory structure
-  * Create admin directories only writeable by root
+  * Create admin directories writeable by root/admin
   * Create admin sftp uploads directory
   * Add SSH admin management scripts
   * Add SSH admin wrapper script

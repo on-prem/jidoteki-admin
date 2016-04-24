@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.11.0 (2016-04-24)
+
+  * Change directory permissions for 'admin' user
+  * Update to Jidoteki Admin API v1.10.1
+
 ## 1.10.2 (2016-04-12)
 
   * Add missing scripts to ansible run

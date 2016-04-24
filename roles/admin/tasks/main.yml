@@ -1,6 +1,20 @@
 # Jidoteki Admin tasks
 
-- name: Create 'admin' directory structure
+- name: Create admin home directories
+  file: >
+    state=directory
+    path={{ prefix }}{{ item }}
+    owner=admin
+    group=admin
+    mode=1750
+    recurse=no
+  with_items:
+    - "{{ admin_path }}/home"
+    - "{{ admin_path }}/home/.ssh"
+  tags:
+    - admin
+
+- name: Create admin directory structure
   file: >
     state=directory
     path={{ prefix }}{{ item }}
@@ -10,33 +24,6 @@
   with_items:
     - "{{ admin_path }}/bin"
     - "{{ admin_path }}/tmp"
-  tags:
-    - admin
-
-- name: Allow 'admin' to write to certain dirs
-  file: >
-    state=directory
-    path={{ prefix }}{{ item }}
-    owner=root
-    group=admin
-    mode=0775
-  with_items:
-    - "{{ admin_path }}/log"
-    - "{{ admin_path }}/etc"
-  tags:
-    - admin
-
-- name: Create admin directories only writeable by root
-  file: >
-    state=directory
-    path={{ prefix }}{{ item }}
-    owner=root
-    group=admin
-    mode=0750
-    recurse=no
-  with_items:
-    - "{{ admin_path }}/home"
-    - "{{ admin_path }}/home/.ssh"
     - "{{ admin_path }}/home/sftp"
   tags:
     - admin
@@ -51,6 +38,19 @@
     recurse=no
   with_items:
     - "{{ admin_path }}/home/sftp/uploads"
+  tags:
+    - admin
+
+- name: Allow 'admin' to write to certain dirs
+  file: >
+    state=directory
+    path={{ prefix }}{{ item }}
+    owner=root
+    group=admin
+    mode=1775
+  with_items:
+    - "{{ admin_path }}/log"
+    - "{{ admin_path }}/etc"
   tags:
     - admin
 
