@@ -16,6 +16,8 @@ if [ -f "/tmp/update_logs.sh.task" ]; then
 fi
 touch /tmp/update_logs.sh.task
 
+source /etc/profile
+
 admin_dir="{{ admin_path }}"
 log_file="/tmp/logs.tar.gz"
 log_dirs="${admin_dir}/log ${1}"

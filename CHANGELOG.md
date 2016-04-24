@@ -2,6 +2,7 @@
 
 ## 1.11.0 (2016-04-24)
 
+  * Source /etc/profile for consistent use of 'tar' command
   * Change directory permissions for 'admin' user
   * Update to Jidoteki Admin API v1.10.1
 

@@ -16,6 +16,8 @@ if [ -f "/tmp/update_debug.sh.task" ]; then
 fi
 touch /tmp/update_debug.sh.task
 
+source /etc/profile
+
 admin_dir="{{ admin_path }}"
 log_file="logs.tar.gz"
 debug_file="debug.tar.gz"
