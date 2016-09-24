@@ -139,8 +139,17 @@ generate_ca_bundle    && \
 generate_chained_cert && \
 replace_old_certs     || fail_and_exit
 
-# Restart the Jidoteki Admin API if it exists
-[ -f "/usr/local/etc/init.d/jidoteki-admin-api" ] && /usr/local/etc/init.d/jidoteki-admin-api restart
+# Restart stunnel, stunnel4 or nginx if they are running
+if pidof nginx >/dev/null; then
+  killall -HUP nginx
+fi
+if pidof stunnel >/dev/null; then
+  kilalll -HUP stunnel
+fi
+if pidof stunnel4 >/dev/null; then
+  killall -HUP stunnel4
+fi
+
 
 echo "success" > "${admin_dir}/etc/status_certs.txt"
 echo "[`date +%s`][{{ admin_type }}] Add TLS certificates successful" 2>&1 | tee -a "${admin_dir}/log/update_certs.log"
