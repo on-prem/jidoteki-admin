@@ -141,13 +141,13 @@ replace_old_certs     || fail_and_exit
 
 # Restart stunnel, stunnel4 or nginx if they are running
 if pidof nginx >/dev/null; then
-  killall -HUP nginx
+  killall -HUP nginx >/dev/null 2>&1 || true
 fi
 if pidof stunnel >/dev/null; then
-  killall -HUP stunnel
+  killall -HUP stunnel >/dev/null 2>&1 || true
 fi
 if pidof stunnel4 >/dev/null; then
-  killall -HUP stunnel4
+  killall -HUP stunnel4 >/dev/null 2>&1 || true
 fi
 
 
