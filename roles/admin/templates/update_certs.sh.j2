@@ -115,6 +115,8 @@ replace_old_certs() {
   mv -f enterprise.crt /usr/local/etc/pki/tls/certs/
   mv -f enterprise.pem /usr/local/etc/pki/tls/
 
+  ln -sf /usr/local/etc/pki/tls/enterprise.pem /enterprise.pem # symlink for stunnel HUP
+
   if [ -f "enterprise-ca.crt" ]; then
     chmod 0640 enterprise-ca.crt
     chown root:staff enterprise-ca.crt
@@ -139,8 +141,17 @@ generate_ca_bundle    && \
 generate_chained_cert && \
 replace_old_certs     || fail_and_exit
 
-# Restart the Jidoteki Admin API if it exists
-[ -f "/usr/local/etc/init.d/jidoteki-admin-api" ] && /usr/local/etc/init.d/jidoteki-admin-api restart
+# Restart stunnel, stunnel4 or nginx if they are running
+if pidof nginx >/dev/null; then
+  killall -HUP nginx >/dev/null 2>&1 || true
+fi
+if pidof stunnel >/dev/null; then
+  killall -HUP stunnel >/dev/null 2>&1 || true
+fi
+if pidof stunnel4 >/dev/null; then
+  killall -HUP stunnel4 >/dev/null 2>&1 || true
+fi
+
 
 echo "success" > "${admin_dir}/etc/status_certs.txt"
 echo "[`date +%s`][{{ admin_type }}] Add TLS certificates successful" 2>&1 | tee -a "${admin_dir}/log/update_certs.log"

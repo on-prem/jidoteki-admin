@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.0 (2016-09-24)
+
+  * Reload nginx or stunnel when updating the SSL certificate rather than the admin API
+
 ## 1.11.0 (2016-04-24)
 
   * Source /etc/profile for consistent use of 'tar' command
