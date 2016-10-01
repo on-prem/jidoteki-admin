@@ -115,6 +115,8 @@ replace_old_certs() {
   mv -f enterprise.crt /usr/local/etc/pki/tls/certs/
   mv -f enterprise.pem /usr/local/etc/pki/tls/
 
+  ln -sf /usr/local/etc/pki/tls/enterprise.pem /enterprise.pem # symlink for stunnel HUP
+
   if [ -f "enterprise-ca.crt" ]; then
     chmod 0640 enterprise-ca.crt
     chown root:staff enterprise-ca.crt
