@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.1 (2016-10-14)
+
+  * Memory optimization: cleanup update package earlier in the decryption process
+
 ## 1.12.0 (2016-09-24)
 
   * Reload nginx or stunnel when updating the SSL certificate rather than the admin API

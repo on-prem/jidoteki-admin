@@ -59,9 +59,10 @@ decrypt_software_package() {
   umask 027
   mv -f "${uploads_dir}/${latest_package}" "${admin_dir}/tmp/" && \
   $openssl_cmd aes-256-cbc -d -pass file:"${admin_dir}/etc/updates.key" -in "$latest_package" | $tar_cmd -xf - -C extracted && \
+  rm -f "$latest_package" && \
   $openssl_cmd dgst -sha256 -verify "${admin_dir}/etc/updates.pub" -signature extracted/software_package.tar.gz.sign extracted/software_package.tar.gz && \
   $tar_cmd --no-same-owner --no-same-permissions -zxf extracted/software_package.tar.gz -C update && \
-  rm -rf extracted "$latest_package" || return 1
+  rm -rf extracted || return 1
 }
 
 # Compare the server and package versions
