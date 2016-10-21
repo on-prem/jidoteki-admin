@@ -70,10 +70,10 @@ decrypt_software_package() {
 
   umask 027
   mv -f "${uploads_dir}/${latest_package}" "${admin_dir}/tmp/"
-  { $openssl_cmd aes-256-cbc -d -pass file:"${admin_dir}/etc/updates.key" -in "$latest_package" | $tar_cmd -xf - -C extracted; } || log_error "Error decrypting software update package" "E1002"
+  { $openssl_cmd aes-256-cbc -d -pass file:"${admin_dir}/etc/updates.key" -in "$latest_package" | $tar_cmd -xf - -C extracted; } || log_error "Error decrypting software update package" "E1005"
   rm -f "$latest_package"
-  $openssl_cmd dgst -sha256 -verify "${admin_dir}/etc/updates.pub" -signature extracted/software_package.tar.gz.sign extracted/software_package.tar.gz  || log_error "Error verifying software update package signature" "E1002"
-  $tar_cmd --no-same-owner --no-same-permissions -zxf extracted/software_package.tar.gz -C update || log_error "Error extracting software update package" "E1002"
+  $openssl_cmd dgst -sha256 -verify "${admin_dir}/etc/updates.pub" -signature extracted/software_package.tar.gz.sign extracted/software_package.tar.gz  || log_error "Error verifying software update package signature" "E1005"
+  $tar_cmd --no-same-owner --no-same-permissions -zxf extracted/software_package.tar.gz -C update || log_error "Error extracting software update package" "E1005"
   rm -rf extracted
 }
 
