@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.13.0 (2016-10-17)
+
+  * Add error_code and error_message for vm updates. Issue #23
+
 ## 1.12.1 (2016-10-14)
 
   * Memory optimization: cleanup update package earlier in the decryption process

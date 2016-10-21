@@ -9,12 +9,6 @@
 
 set -e
 
-if [ -f "/tmp/update_vm.sh.task" ]; then
-  echo "already running"
-  exit 1
-fi
-touch /tmp/update_vm.sh.task
-
 source /etc/profile
 
 tar_cmd=`which tar`
@@ -23,10 +17,22 @@ sort_cmd=`which sort`
 admin_dir="{{ admin_path }}"
 uploads_dir="${admin_dir}/home/sftp/uploads"
 
+log_output() {
+  tee -a "${admin_dir}/log/update.log"
+}
+
 fail_and_exit() {
   echo "failed" > "${admin_dir}/etc/status_update.txt"
-  echo "[`date +%s`][{{ admin_type }}] Failed updating {{ admin_type_lowcase }}. Cleaning up.." 2>&1 | tee -a "${admin_dir}/log/update.log"
+  echo "[`date +%s`][{{ admin_type }}] Failed updating {{ admin_type_lowcase }}. Cleaning up.." | log_output
   exit 1
+}
+
+log_error() {
+  umask 022
+  echo "[`date +%s`][{{ admin_type }}] $1" | log_output
+  echo "$1" > "${admin_dir}/etc/status_error_message.txt"
+  echo "$2" > "${admin_dir}/etc/status_error_code.txt"
+  fail_and_exit
 }
 
 cleanup() {
@@ -35,6 +41,11 @@ cleanup() {
   rm -rf software_package* update extracted
   rm -f /tmp/update_vm.sh.task
 }
+
+if [ -f "/tmp/update_vm.sh.task" ]; then
+  log_error "Update is already running" "E1004"
+fi
+touch /tmp/update_vm.sh.task
 
 ################
 
@@ -45,24 +56,25 @@ find_latest_package() {
   # Note: this requires GNU sort from coreutils
   latest_package=`ls software_package-*.enc* | $sort_cmd -V -r | head -n 1`
 
-  if [ ! "$latest_package" ]; then return 1; fi
+  if [ ! "$latest_package" ]; then
+    log_error "Missing update package" "E1003"
+  fi
 }
 
 # Decrypt and extract the update package with the updates.key
 decrypt_software_package() {
   cd "${admin_dir}/tmp"
 
-  [ "$latest_package" ] || return 1
   [ -d "update" ] || mkdir update
   [ -d "extracted" ] || mkdir extracted
 
   umask 027
-  mv -f "${uploads_dir}/${latest_package}" "${admin_dir}/tmp/" && \
-  $openssl_cmd aes-256-cbc -d -pass file:"${admin_dir}/etc/updates.key" -in "$latest_package" | $tar_cmd -xf - -C extracted && \
-  rm -f "$latest_package" && \
-  $openssl_cmd dgst -sha256 -verify "${admin_dir}/etc/updates.pub" -signature extracted/software_package.tar.gz.sign extracted/software_package.tar.gz && \
-  $tar_cmd --no-same-owner --no-same-permissions -zxf extracted/software_package.tar.gz -C update && \
-  rm -rf extracted || return 1
+  mv -f "${uploads_dir}/${latest_package}" "${admin_dir}/tmp/"
+  { $openssl_cmd aes-256-cbc -d -pass file:"${admin_dir}/etc/updates.key" -in "$latest_package" | $tar_cmd -xf - -C extracted; } || log_error "Error decrypting software update package" "E1002"
+  rm -f "$latest_package"
+  $openssl_cmd dgst -sha256 -verify "${admin_dir}/etc/updates.pub" -signature extracted/software_package.tar.gz.sign extracted/software_package.tar.gz  || log_error "Error verifying software update package signature" "E1002"
+  $tar_cmd --no-same-owner --no-same-permissions -zxf extracted/software_package.tar.gz -C update || log_error "Error extracting software update package" "E1002"
+  rm -rf extracted
 }
 
 # Compare the server and package versions
@@ -90,20 +102,17 @@ compare_versions() {
 
     # Ensure the package isn't too old
     if [ "$latest" != "$package_version" ]; then
-      echo "software update package v${package_version} is too old." 2>&1 | tee -a "${admin_dir}/log/update.log"
-      return 1
+      log_error "software update package v${package_version} is too old." "E1001"
     fi
 
     # Ensure the package isn't the exact same
     if [ "$package_version" = "$server_version" ]; then
-      echo "software update package v${package_version} already up-to-date." 2>&1 | tee -a "${admin_dir}/log/update.log"
-      return 1
+      log_error "software update package v${package_version} already up-to-date." "E1001"
     fi
 
     # Ensure the major version matches
     if [ "$package_major" != "$server_major" ]; then
-      echo "software update package v${package_version} must be v${server_major}.x.x" 2>&1 | tee -a "${admin_dir}/log/update.log"
-      return 1
+      log_error "software update package v${package_version} must be v${server_major}.x.x" "E1001"
     fi
 
     # If it's a bundle, we only care if the minor is greater or equal
@@ -111,16 +120,14 @@ compare_versions() {
       if [ "$package_minor" -ge "$server_minor" ]; then
         return 0
       else
-        echo "software update package v${package_version} must be v${server_major}.${server_minor}.x or greater" 2>&1 | tee -a "${admin_dir}/log/update.log"
-        return 1
+        log_error "software update package v${package_version} must be v${server_major}.${server_minor}.x or greater" "E1001"
       fi
     else
       # Ensure the minor version is equal or +1
       if [ "$package_minor" = "$server_minor" ] || [ "$package_minor" = "$next_minor" ]; then
         return 0
       else
-        echo "software update package v${package_version} must be v${server_major}.${server_minor}.x or v${server_major}.${next_minor}.x" 2>&1 | tee -a "${admin_dir}/log/update.log"
-        return 1
+        log_error "software update package v${package_version} must be v${server_major}.${server_minor}.x or v${server_major}.${next_minor}.x" "E1001"
       fi
     fi
 
@@ -132,15 +139,22 @@ update_appliance() {
   cd "${admin_dir}/tmp/update"
 
   if [ -f "update.sh" ]; then
-    echo "Starting update at: `date`" 2>&1 | tee -a "${admin_dir}/log/update.log"
+    echo "Starting update at: `date`" | log_output
 
     chmod +x update.sh
-    ./update.sh || return 1
-
-    echo "Completed update at: `date`" 2>&1 | tee -a "${admin_dir}/log/update.log"
+    if ./update.sh; then
+      echo "Completed update at: `date`" | log_output
+      return 0
+    else
+      if [ -f "${admin_dir}/etc/status_error_message.txt" ] && [ -f "${admin_dir}/etc/status_error_code.txt" ]; then
+        fail_and_exit
+      else
+        log_error "Error running update" "E1002"
+      fi
+    fi
   else
     echo "success" > "${admin_dir}/etc/status_update.txt"
-    echo "[`date +%s`][{{ admin_type }}] No update script found, skipping." 2>&1 | tee -a "${admin_dir}/log/update.log"
+    echo "[`date +%s`][{{ admin_type }}] No update script found, skipping." | log_output
     exit 0
   fi
 }
@@ -152,13 +166,15 @@ trap 'exit 127' INT
 
 # Run all the tasks
 echo "running" > "${admin_dir}/etc/status_update.txt"
-echo "[`date +%s`][{{ admin_type }}] Updating {{ admin_type_lowcase }}. Please wait.." 2>&1 | tee -a "${admin_dir}/log/update.log"
+echo "[`date +%s`][{{ admin_type }}] Updating {{ admin_type_lowcase }}. Please wait.." | log_output
+
+rm -f "${admin_dir}/etc/status_update.txt" "${admin_dir}/etc/status_error_message.txt" "${admin_dir}/etc/status_error_code.txt"
 
 find_latest_package       && \
 decrypt_software_package  && \
 compare_versions          && \
-update_appliance          || fail_and_exit
+update_appliance          || log_error "Script error" "E1000"
 
 echo "success" > "${admin_dir}/etc/status_update.txt"
-echo "[`date +%s`][{{ admin_type }}] Update successful" 2>&1 | tee -a "${admin_dir}/log/update.log"
+echo "[`date +%s`][{{ admin_type }}] Update successful" | log_output
 exit 0
