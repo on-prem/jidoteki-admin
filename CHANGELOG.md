@@ -2,7 +2,7 @@
 
 ## 1.13.0 (2016-10-17)
 
-  * Add error_code and error_message for vm updates. Issue #23
+  * Add error_code and error_message for vm updates. Issue unscramble/jidoteki-admin-api#23
 
 ## 1.12.1 (2016-10-14)
 
