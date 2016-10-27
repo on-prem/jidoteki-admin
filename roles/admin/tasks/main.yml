@@ -66,6 +66,7 @@
     - update_debug.sh
     - update_license.sh
     - update_logs.sh
+    - update_services.sh
     - update_settings.sh
     - update_token.sh
     - update_vm.sh

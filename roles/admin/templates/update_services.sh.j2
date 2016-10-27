@@ -1,0 +1,80 @@
+#!/bin/sh
+#
+# Generic script for updating and retrieving service status
+#
+# Copyright (c) 2013-2016 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# https://unscramble.co.jp
+#
+# VERSION: {{ jidoteki_admin_version }}
+
+set -u
+set -e
+
+services_type=$1
+
+if [ "$services_type" = "UPDATE" ]; then
+  if [ -f "/tmp/update_services.sh.task" ]; then
+    echo "already running"
+    exit 1
+  fi
+  touch /tmp/update_services.sh.task
+fi
+
+admin_dir="{{ admin_path }}"
+services_file="/usr/local/etc/allservices.txt"
+default_services="openssh jidoteki-admin-api"
+oldstatus=""
+
+fail_and_exit() {
+  rm -f /tmp/update_services.sh.task
+  echo "[`date +%s`][{{ admin_type }}] Invalid or missing services file" 2>&1 | tee -a "${admin_dir}/log/update_services.log"
+  exit 1
+}
+
+################
+
+get_status() {
+  [ "$service_num" -eq 0 ] || oldstatus="$statuses,"
+
+  alias ps='/bin/ps'
+  result="`/usr/local/etc/init.d/${1} status`"
+  status=`echo "$result" | grep -e 'is running' -e 'online' -qw`
+
+  if [ "$?" -eq 0 ]; then
+    statuses="$oldstatus{\"$1\":\"running\"}"
+  else
+    statuses="$oldstatus{\"$1\":\"not running\"}"
+  fi
+  service_num=$(($service_num+1))
+}
+
+get_services() {
+  service_num=0
+
+  for i in `echo "$default_services"`; do
+    get_status $i
+  done
+
+  if [ -f "$services_file" ]; then
+    IFS=" 
+"
+    for i in `cat $services_file`; do
+      get_status $i
+    done
+  fi
+
+  echo -n "{\"services\":[$statuses]}"
+}
+
+################
+
+if [ "$services_type" = "UPDATE" ]; then
+  # parse_services || fail_and_exit # TODO: implement this
+  exit 1
+else
+  get_services || fail_and_exit
+fi
+
+rm -f /tmp/update_services.sh.task
+
+exit 0
