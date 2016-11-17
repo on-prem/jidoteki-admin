@@ -32,6 +32,7 @@ log_error() {
   echo "[`date +%s`][{{ admin_type }}] $1" | log_output
   echo "$1" > "${admin_dir}/etc/status_error_message.txt"
   echo "$2" > "${admin_dir}/etc/status_error_code.txt"
+  chgrp admin ${admin_dir}/etc/status_error_message.txt ${admin_dir}/etc/status_error_code.txt
   fail_and_exit
 }
 
@@ -166,9 +167,10 @@ trap 'exit 127' INT
 
 # Run all the tasks
 echo "running" > "${admin_dir}/etc/status_update.txt"
+chgrp admin ${admin_dir}/etc/status_update.txt
 echo "[`date +%s`][{{ admin_type }}] Updating {{ admin_type_lowcase }}. Please wait.." | log_output
 
-rm -f "${admin_dir}/etc/status_update.txt" "${admin_dir}/etc/status_error_message.txt" "${admin_dir}/etc/status_error_code.txt"
+rm -f "${admin_dir}/etc/status_error_message.txt" "${admin_dir}/etc/status_error_code.txt"
 
 find_latest_package       && \
 decrypt_software_package  && \
