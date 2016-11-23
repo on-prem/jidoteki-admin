@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.13.0 (2016-10-27)
+
+  * Add 'services' command to retrieve the various services status
+  * Add error_code and error_message for vm updates. Issue unscramble/jidoteki-admin-api#23
+
 ## 1.12.1 (2016-10-14)
 
   * Memory optimization: cleanup update package earlier in the decryption process

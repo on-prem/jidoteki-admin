@@ -60,6 +60,9 @@ case "${SSH_ORIGINAL_COMMAND}" in
     sudo ${admin_dir}/bin/update_certs.sh && \
     backup_data
     ;;
+  "services")
+    sudo ${admin_dir}/bin/update_services.sh "FETCH"
+    ;;
   *)
     exit 1
     ;;
