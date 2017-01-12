@@ -1,0 +1,62 @@
+#!/bin/sh
+#
+# Generic script for updating the persistent storage settings
+#
+# Copyright (c) 2013-2017 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# https://unscramble.co.jp
+#
+# VERSION: {{ jidoteki_admin_version }}
+
+set -u
+set -e
+
+if [ -f "/tmp/update_storage.sh.task" ]; then
+  echo "already running"
+  exit 1
+fi
+touch /tmp/update_storage.sh.task
+
+admin_dir="{{ admin_path }}"
+uploads_dir="${admin_dir}/home/sftp/uploads"
+
+fail_and_exit() {
+  rm -f /tmp/update_storage.sh.task
+  echo "[`date +%s`][{{ admin_type }}] Invalid or missing settings file" 2>&1 | tee -a "${admin_dir}/log/update_storage.log"
+  exit 1
+}
+
+################
+
+move_settings_files() {
+  cd "${uploads_dir}"
+
+  if [[ ! -f "storage.json" && ! -f "storage.conf" ]]; then return 1; fi
+
+  if [ -f "storage.json" ]; then
+    mv -f storage.json ${admin_dir}/etc/
+    chmod 640 "${admin_dir}/etc/storage.json" ; chown root:admin "${admin_dir}/etc/storage.json"
+  fi
+
+  if [ -f "storage.conf" ]; then
+    mv -f storage.conf /usr/local/etc/
+    chmod 640 "/usr/local/etc/storage.conf" ; chown root:admin "/usr/local/etc/storage.conf"
+  fi
+}
+
+save_storage_settings() {
+  ${admin_dir}/bin/storage.sh || return 1
+}
+
+################
+
+# Run all the tasks
+echo "[`date +%s`][{{ admin_type }}] Updating settings. Please wait.." 2>&1 | tee -a "${admin_dir}/log/update_storage.log"
+
+move_settings_files && \
+save_storage_settings || fail_and_exit
+
+echo "[`date +%s`][{{ admin_type }}] Updating settings successful" 2>&1 | tee -a "${admin_dir}/log/update_storage.log"
+
+rm -f /tmp/update_storage.sh.task
+
+exit 0

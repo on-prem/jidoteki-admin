@@ -63,6 +63,10 @@ case "${SSH_ORIGINAL_COMMAND}" in
   "services")
     sudo ${admin_dir}/bin/update_services.sh "FETCH"
     ;;
+  "storage")
+    sudo ${admin_dir}/bin/update_storage.sh && \
+    backup_data
+    ;;
   *)
     exit 1
     ;;

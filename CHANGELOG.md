@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.14.0 (2017-01-09)
+
+  * Add 'storage' command to store and update persistent storage options
+
 ## 1.13.0 (2016-10-27)
 
   * Add 'services' command to retrieve the various services status

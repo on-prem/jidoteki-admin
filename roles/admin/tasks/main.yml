@@ -68,6 +68,7 @@
     - update_logs.sh
     - update_services.sh
     - update_settings.sh
+    - update_storage.sh
     - update_token.sh
     - update_vm.sh
   tags:
