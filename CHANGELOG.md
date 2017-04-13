@@ -6,6 +6,7 @@
   * Ensure wrapper uses 'symlinktool.sh' instead of 'filetool.sh'
   * Output update script PID to '.task' file
   * Ensure update script TRAPs SIGINT and SIGTERM to exit cleanly
+  * Don't prevent 'major' version updates and don't force bundles to increase the 'minor' version
 
 ## 1.14.0 (2017-01-09)
 

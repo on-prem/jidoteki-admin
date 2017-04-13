@@ -110,28 +110,6 @@ compare_versions() {
     if [ "$package_version" = "$server_version" ]; then
       log_error "software update package v${package_version} already up-to-date." "E1001"
     fi
-
-    # Ensure the major version matches
-    if [ "$package_major" != "$server_major" ]; then
-      log_error "software update package v${package_version} must be v${server_major}.x.x" "E1001"
-    fi
-
-    # If it's a bundle, we only care if the minor is greater or equal
-    if [ -f "bundle.txt" ]; then
-      if [ "$package_minor" -ge "$server_minor" ]; then
-        return 0
-      else
-        log_error "software update package v${package_version} must be v${server_major}.${server_minor}.x or greater" "E1001"
-      fi
-    else
-      # Ensure the minor version is equal or +1
-      if [ "$package_minor" = "$server_minor" ] || [ "$package_minor" = "$next_minor" ]; then
-        return 0
-      else
-        log_error "software update package v${package_version} must be v${server_major}.${server_minor}.x or v${server_major}.${next_minor}.x" "E1001"
-      fi
-    fi
-
   fi
 }
 
