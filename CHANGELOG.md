@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.15.0 (2017-04-12)
+
+  * Add 'backup' command to generate a backup archive of specific files
+  * Ensure wrapper uses 'symlinktool.sh' instead of 'filetool.sh'
+  * Output update script PID to '.task' file
+  * Ensure update script TRAPs SIGINT and SIGTERM to exit cleanly
+
 ## 1.14.0 (2017-01-09)
 
   * Add 'storage' command to store and update persistent storage options

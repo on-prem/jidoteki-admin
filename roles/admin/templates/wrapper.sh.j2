@@ -2,7 +2,7 @@
 #
 # Wrapper for executing admin commands on a {{ admin_type_lowcase }}
 #
-# Copyright (c) 2013-2016 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# Copyright (c) 2013-2017 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # https://unscramble.co.jp
 #
 # VERSION: {{ jidoteki_admin_version }}
@@ -13,8 +13,10 @@ set -e
 admin_dir="{{ admin_path }}"
 
 backup_data() {
-  if [ -f "/usr/bin/filetool.sh" ]; then
-    sudo /usr/bin/filetool.sh -b -s
+  if [ -f "/usr/bin/symlinktool.sh" ]; then
+    DEVICE="$(sed 's/\///' /etc/sysconfig/backup_device)"
+    sudo /usr/bin/symlinktool.sh -c "$DEVICE"
+    sudo /usr/bin/symlinktool.sh -r "$DEVICE"
   fi
 }
 
@@ -65,6 +67,11 @@ case "${SSH_ORIGINAL_COMMAND}" in
     ;;
   "storage")
     sudo ${admin_dir}/bin/update_storage.sh && \
+    backup_data
+    ;;
+  "backup")
+    # $1=backup_action, $2=url
+    sudo ${admin_dir}/bin/update_backup.sh "$1" && \
     backup_data
     ;;
   *)

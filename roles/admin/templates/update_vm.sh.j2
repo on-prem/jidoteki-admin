@@ -46,7 +46,7 @@ cleanup() {
 if [ -f "/tmp/update_vm.sh.task" ]; then
   log_error "Update is already running" "E1004"
 fi
-touch /tmp/update_vm.sh.task
+echo "$$" > /tmp/update_vm.sh.task
 
 ################
 
@@ -164,6 +164,7 @@ update_appliance() {
 
 trap cleanup EXIT
 trap 'exit 127' INT
+trap fail_and_exit SIGINT SIGTERM
 
 # Run all the tasks
 echo "running" > "${admin_dir}/etc/status_update.txt"

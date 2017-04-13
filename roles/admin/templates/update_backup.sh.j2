@@ -1,0 +1,96 @@
+#!/bin/sh
+#
+# Generic script for starting and stopping a backup
+#
+# Copyright (c) 2013-2017 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# https://unscramble.co.jp
+#
+# VERSION: {{ jidoteki_admin_version }}
+
+set -u
+set -e
+
+backup_action=$1
+
+if [ "$backup_action" = "START" ]; then
+  if [ -f "/tmp/update_backup.sh.task" ]; then
+    echo "already running"
+    exit 1
+  fi
+  echo "$$" > /tmp/update_backup.sh.task
+fi
+
+admin_dir="{{ admin_path }}"
+uploads_dir="${admin_dir}/home/sftp/uploads"
+backup_list=`cat ${admin_dir}/etc/backup.txt`
+backup_file="${uploads_dir}/backup.tar.gz"
+backup_json="${uploads_dir}/backup.json"
+
+log_output() {
+  tee -a "${admin_dir}/log/update_backup.log"
+}
+
+fail_and_exit() {
+  rm -rf "$backup_file"
+  rm -f /tmp/update_backup.sh.task
+
+  [ -f "$backup_json" ] && echo -n "{\"status\":\"failed\"}" > "$backup_json"
+  echo "[`date +%s`][{{ admin_type }}] Backup failed" | log_output
+  exit 1
+}
+
+################
+
+start_backup() {
+  echo "[`date +%s`][{{ admin_type }}] Validating backup file size" | log_output
+
+  backup_all_files=$(find $backup_list -maxdepth 0 -print)
+  disk_available=`/bin/df -k / | tail -n 1 | awk -F " " ' {print $4 }'`
+  backup_size=$((`/bin/tar -C / -czph $backup_all_files -f - | wc -c` / 1024))
+  backup_safeguard=$(($disk_available - 16384)) # 16 MiB in KiB
+
+  if [ "$backup_size" -lt "$backup_safeguard" ]; then
+    echo "[`date +%s`][{{ admin_type }}] Starting backup" | log_output
+
+    # generate the backup archive
+    /bin/tar -C / -czphf "$backup_file" $backup_all_files || fail_and_exit
+
+    # generate the JSON status file
+    filesize=`/usr/bin/du -ha $backup_file | awk '{print $1 }'`
+    sha256=`openssl dgst -sha256 $backup_file | awk '{ print $2 }'`
+    echo -n "{\"status\":\"success\",\"filesize\":\"${filesize}\",\"sha256\":\"${sha256}\"}" > "$backup_json"
+    echo "[`date +%s`][{{ admin_type }}] Backup complete" | log_output
+  else
+    echo "[`date +%s`][{{ admin_type }}] Backup archive is too large: $backup_size of $backup_safeguard KiB" | log_output
+    fail_and_exit
+  fi
+}
+
+stop_backup() {
+  if [ -f "/tmp/update_backup.sh.task" ]; then
+    echo "[`date +%s`][{{ admin_type }}] Stopping backup" | log_output
+    kill `cat /tmp/update_backup.sh.task` || true
+  fi
+
+  if [ -f "$backup_file" ]; then
+    echo "[`date +%s`][{{ admin_type }}] Deleting backup archive" | log_output
+    rm -rf "$backup_file" "$backup_json"
+  fi
+}
+
+################
+
+trap fail_and_exit INT SIGINT SIGTERM
+
+if [ "$backup_action" = "START" ]; then
+  echo -n "{\"status\":\"running\"}" > "$backup_json"
+  chgrp admin "$backup_json"
+
+  start_backup  || fail_and_exit
+else
+  stop_backup   || fail_and_exit
+fi
+
+rm -f /tmp/update_backup.sh.task
+
+exit 0
