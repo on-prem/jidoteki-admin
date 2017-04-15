@@ -16,9 +16,10 @@ openssl_cmd=`which openssl`
 sort_cmd=`which sort`
 admin_dir="{{ admin_path }}"
 uploads_dir="${admin_dir}/home/sftp/uploads"
+update_log="${admin_dir}/log/update.log"
 
 log_output() {
-  tee -a "${admin_dir}/log/update.log"
+  tee -a "$update_log"
 }
 
 fail_and_exit() {
@@ -134,6 +135,9 @@ trap 'exit 127' INT
 trap fail_and_exit SIGINT SIGTERM
 
 # Run all the tasks
+[ -f "$update_log" ] || touch "$update_log"
+chmod 664 "$update_log"
+chown root:admin "$update_log"
 echo "running" > "${admin_dir}/etc/status_update.txt"
 chgrp admin ${admin_dir}/etc/status_update.txt
 echo "[`date +%s`][{{ admin_type }}] Updating {{ admin_type_lowcase }}. Please wait.." | log_output

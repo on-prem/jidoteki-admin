@@ -70,7 +70,7 @@ case "${SSH_ORIGINAL_COMMAND}" in
     backup_data
     ;;
   "backup")
-    # $1=backup_action, $2=url
+    # $1=backup_action
     sudo ${admin_dir}/bin/update_backup.sh "$1" && \
     backup_data
     ;;
