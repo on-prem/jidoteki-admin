@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.16.0 (TBD)
+
+  * Ensure 'backup' script is included in builds
+  * Remove support for Debian/CentOS
+
 ## 1.15.0 (2017-04-12)
 
   * Add 'backup' command to generate a backup archive of specific files

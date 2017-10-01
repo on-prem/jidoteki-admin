@@ -62,6 +62,7 @@
     group=root
     mode=0755
   with_items:
+    - update_backup.sh
     - update_certs.sh
     - update_debug.sh
     - update_license.sh
@@ -73,7 +74,6 @@
     - update_vm.sh
   tags:
     - admin
-    - updated
 
 - name: Add SSH admin wrapper script
   template: >
@@ -84,7 +84,3 @@
     mode=0750
   tags:
     - admin
-    - updated
-
-- include: repos_debian.yml
-- include: repos_centos.yml
