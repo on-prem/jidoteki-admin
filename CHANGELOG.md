@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.16.0 (TBD)
+## 1.16.0 (2017-10-02)
 
   * Ensure 'backup' script is included in builds
   * Remove support for Debian/CentOS
