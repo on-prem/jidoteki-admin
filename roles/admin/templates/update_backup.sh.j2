@@ -59,6 +59,7 @@ start_backup() {
     filesize=`/usr/bin/du -ha $backup_file | awk '{print $1 }'`
     sha256=`openssl dgst -sha256 $backup_file | awk '{ print $2 }'`
     echo -n "{\"status\":\"success\",\"filesize\":\"${filesize}\",\"sha256\":\"${sha256}\"}" > "$backup_json"
+    echo "Created file: ${backup_file} - size: ${filesize} - hash: ${sha256}" | log_output
     echo "[`date +%s`][{{ admin_type }}] Backup complete" | log_output
   else
     echo "[`date +%s`][{{ admin_type }}] Backup archive is too large: $backup_size of $backup_safeguard KiB" | log_output

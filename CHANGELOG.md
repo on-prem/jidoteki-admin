@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.17.0 (TBD)
+
+  * Output more detailed info when creating a backup
+  * Ensure license.asc has correct permissions
+
 ## 1.16.0 (2017-10-02)
 
   * Ensure 'backup' script is included in builds

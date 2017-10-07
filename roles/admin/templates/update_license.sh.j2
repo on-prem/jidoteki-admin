@@ -2,7 +2,7 @@
 #
 # Generic script for updating and decrypting a license file
 #
-# Copyright (c) 2013-2016 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# Copyright (c) 2013-2017 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # https://unscramble.co.jp
 #
 # VERSION: {{ jidoteki_admin_version }}
@@ -34,7 +34,7 @@ move_license_file() {
 
   echo "[`date +%s`][{{ admin_type }}] Updating license. Please wait.." 2>&1 | tee -a "${admin_dir}/log/update_license.log"
   mv -f license.asc ${admin_dir}/etc/
-  chmod 640 "${admin_dir}/etc/license.asc" ; chown root:root "${admin_dir}/etc/license.asc"
+  chmod 640 "${admin_dir}/etc/license.asc" ; chown root:admin "${admin_dir}/etc/license.asc"
   echo "[`date +%s`][{{ admin_type }}] Updating license successful" 2>&1 | tee -a "${admin_dir}/log/update_license.log"
 }
 
