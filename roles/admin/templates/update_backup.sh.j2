@@ -23,8 +23,8 @@ fi
 admin_dir="{{ admin_dir }}"
 uploads_dir="${admin_dir}/home/sftp/uploads"
 backup_list=`cat ${admin_dir}/etc/backup.txt`
-backup_file="${uploads_dir}/backup.tar.gz"
-backup_archive="${uploads_dir}/backup-archive.tar.gz"
+backup_file="${uploads_dir}/backup.tar"
+backup_archive="${uploads_dir}/backup-archive.tar"
 backup_json="${uploads_dir}/backup.json"
 restore_path="/data"
 
@@ -45,16 +45,16 @@ fail_and_exit() {
 start_backup() {
   echo "[`date +%s`][{{ admin_type }}] Validating backup file size" | log_output
 
-  backup_all_files=$(find $backup_list -maxdepth 0 -print)
+  backup_all_files=$(cd $restore_path; find $backup_list -maxdepth 0 -print)
   disk_available=`/bin/df -k / | tail -n 1 | awk -F " " ' {print $4 }'`
-  backup_size=$((`/bin/tar -C / -czph $backup_all_files -f - | wc -c` / 1024))
+  backup_size=$((`/bin/tar -C $restore_path -ch $backup_all_files -f - | wc -c` / 1024))
   backup_safeguard=$(($disk_available - 16384)) # 16 MiB in KiB
 
   if [ "$backup_size" -lt "$backup_safeguard" ]; then
     echo "[`date +%s`][{{ admin_type }}] Starting backup" | log_output
 
     # generate the backup archive
-    /bin/tar -C / -czphf "$backup_file" $backup_all_files || fail_and_exit
+    /bin/tar -C "$restore_path" -chf "$backup_file" $backup_all_files || fail_and_exit
 
     # generate the JSON status file
     filesize=`/usr/bin/du -ha $backup_file | awk '{print $1 }'`
@@ -83,7 +83,7 @@ stop_backup() {
 restore_backup() {
   echo "[`date +%s`][{{ admin_type }}] Restoring backup archive to $restore_path" | log_output
 
-  sudo -u admin /bin/tar -C "$restore_path" -zxf "$backup_archive" || fail_and_exit
+  sudo -u admin /bin/tar -C "$restore_path" -xf "$backup_archive" || fail_and_exit
   rm -f "$backup_archive"
 
   echo "[`date +%s`][{{ admin_type }}] Restore complete" | log_output
