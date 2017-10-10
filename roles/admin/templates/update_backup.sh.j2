@@ -33,10 +33,16 @@ log_output() {
 }
 
 fail_and_exit() {
-  rm -f "$backup_file" /tmp/update_backup.sh.task "$backup_archive"
+  if [ "$backup_action" = "RESTORE" ]; then
+    rm -f "$backup_archive"
+    echo "[`date +%s`][{{ admin_type }}] Restore failed" | log_output
+  else
+    rm -f "$backup_file"
+    [ -f "$backup_json" ] && echo -n "{\"status\":\"failed\"}" > "$backup_json"
+    echo "[`date +%s`][{{ admin_type }}] Backup failed" | log_output
+  fi
 
-  [ -f "$backup_json" ] && echo -n "{\"status\":\"failed\"}" > "$backup_json"
-  echo "[`date +%s`][{{ admin_type }}] Backup failed" | log_output
+  rm -f /tmp/update_backup.sh.task
   exit 1
 }
 
@@ -99,7 +105,7 @@ if [ "$backup_action" = "START" ]; then
 
   start_backup  || fail_and_exit
 elif [ "$backup_action" = "RESTORE" ]; then
-  restore_backup || fail_and_exit
+  restore_backup
 else
   stop_backup   || fail_and_exit
 fi
