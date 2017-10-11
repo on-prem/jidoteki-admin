@@ -1,9 +1,12 @@
 # Changelog
 
-## 1.17.0 (TBD)
+## 1.17.0 (2017-11-01)
 
   * Output more detailed info when creating a backup
   * Ensure license.asc has correct permissions
+  * Fix minor issues in 'backup' script
+  * Add 'replication' script for handling replication settings
+  * Merge network settings commands for dhcp/static
 
 ## 1.16.0 (2017-10-02)
 

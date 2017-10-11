@@ -1,0 +1,62 @@
+#!/bin/sh
+#
+# Generic script for updating the replication settings
+#
+# Copyright (c) 2013-2017 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# https://unscramble.co.jp
+#
+# VERSION: {{ jidoteki_admin_version }}
+
+set -u
+set -e
+
+if [ -f "/tmp/update_replication.sh.task" ]; then
+  echo "already running"
+  exit 1
+fi
+touch /tmp/update_replication.sh.task
+
+admin_dir="{{ admin_path }}"
+uploads_dir="${admin_dir}/home/sftp/uploads"
+
+fail_and_exit() {
+  rm -f /tmp/update_replication.sh.task
+  echo "[`date +%s`][{{ admin_type }}] Unable to update replication settings" 2>&1 | tee -a "${admin_dir}/log/update_replication.log"
+  exit 1
+}
+
+################
+
+move_settings_files() {
+  cd "${uploads_dir}"
+
+  if [[ ! -f "replication.json" && ! -f "replication.conf" ]]; then return 1; fi
+
+  if [ -f "replication.json" ]; then
+    mv -f replication.json ${admin_dir}/etc/
+    chmod 640 "${admin_dir}/etc/replication.json" ; chown root:admin "${admin_dir}/etc/replication.json"
+  fi
+
+  if [ -f "replication.conf" ]; then
+    mv -f replication.conf /usr/local/etc/
+    chmod 640 "/usr/local/etc/replication.conf" ; chown root:admin "/usr/local/etc/replication.conf"
+  fi
+}
+
+save_replication_settings() {
+  ${admin_dir}/bin/replication.sh || return 1
+}
+
+################
+
+# Run all the tasks
+echo "[`date +%s`][{{ admin_type }}] Updating replication settings. Please wait.." 2>&1 | tee -a "${admin_dir}/log/update_replication.log"
+
+move_settings_files && \
+save_replication_settings || fail_and_exit
+
+echo "[`date +%s`][{{ admin_type }}] Updating replication settings successful" 2>&1 | tee -a "${admin_dir}/log/update_replication.log"
+
+rm -f /tmp/update_replication.sh.task
+
+exit 0

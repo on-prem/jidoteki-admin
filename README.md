@@ -11,6 +11,7 @@ This repository contains bash scripts, ansible roles, and other files needed to 
 * Ansible 1.5.x
 * curl
 * sha1sum (from core-utils)
+* [symlinktool](https://github.com/aw/tinycore-symlinktool) for running backups
 
 ## Ansible roles
 

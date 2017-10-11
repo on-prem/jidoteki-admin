@@ -35,12 +35,8 @@ case "${SSH_ORIGINAL_COMMAND}" in
     sudo ${admin_dir}/bin/update_license.sh && \
     backup_data
     ;;
-  "settings static")
-    sudo ${admin_dir}/bin/update_settings.sh static && \
-    backup_data
-    ;;
-  "settings dhcp")
-    sudo ${admin_dir}/bin/update_settings.sh dhcp && \
+  "settings")
+    sudo ${admin_dir}/bin/update_settings.sh "$1" && \
     backup_data
     ;;
   "token")
@@ -72,6 +68,10 @@ case "${SSH_ORIGINAL_COMMAND}" in
   "backup")
     # $1=backup_action
     sudo ${admin_dir}/bin/update_backup.sh "$1" && \
+    backup_data
+    ;;
+  "replication")
+    sudo ${admin_dir}/bin/update_replication.sh && \
     backup_data
     ;;
   *)
