@@ -20,7 +20,7 @@ if [ "$backup_action" = "START" ] || [ "$backup_action" = "RESTORE" ]; then
   echo "$$" > /tmp/update_backup.sh.task
 fi
 
-admin_dir="{{ admin_dir }}"
+admin_dir="{{ admin_path }}"
 uploads_dir="${admin_dir}/home/sftp/uploads"
 backup_list=`cat ${admin_dir}/etc/backup.txt`
 backup_file="${uploads_dir}/backup.tar"

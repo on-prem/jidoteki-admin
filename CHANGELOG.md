@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.17.1 (2017-11-02)
+
+  * Fix regression in ansible role creation of backup script template
+
 ## 1.17.0 (2017-11-01)
 
   * Output more detailed info when creating a backup
