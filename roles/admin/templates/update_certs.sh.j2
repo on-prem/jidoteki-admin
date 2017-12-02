@@ -106,8 +106,8 @@ generate_chained_cert() {
 
 replace_old_certs() {
   chmod 0640 enterprise.key enterprise.crt enterprise.pem
-  chown root:staff enterprise.key enterprise.crt
-  chown root:admin enterprise.pem
+  chown 0:50 enterprise.key enterprise.crt
+  chown 0:997 enterprise.pem
 
   mkdir -p /usr/local/etc/pki/tls/private /usr/local/etc/pki/tls/certs /usr/local/etc/pki/tls/cacerts
 
@@ -119,7 +119,7 @@ replace_old_certs() {
 
   if [ -f "enterprise-ca.crt" ]; then
     chmod 0640 enterprise-ca.crt
-    chown root:staff enterprise-ca.crt
+    chown 0:50 enterprise-ca.crt
     mv -f enterprise-ca.crt /usr/local/etc/pki/tls/cacerts/
     [ -f "ca-bundle.crt" ] && mv -f ca-bundle.crt /usr/local/etc/pki/tls/
   fi

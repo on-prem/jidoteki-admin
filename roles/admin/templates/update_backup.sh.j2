@@ -89,7 +89,7 @@ stop_backup() {
 restore_backup() {
   echo "[`date +%s`][{{ admin_type }}] Restoring backup archive to $restore_path" | log_output
 
-  sudo -u admin /bin/tar -C "$restore_path" -xf "$backup_archive" || fail_and_exit
+  sudo -u '#997' /bin/tar -C "$restore_path" -xf "$backup_archive" || fail_and_exit
   rm -f "$backup_archive"
 
   echo "[`date +%s`][{{ admin_type }}] Restore complete" | log_output
@@ -101,7 +101,7 @@ trap fail_and_exit INT SIGINT SIGTERM
 
 if [ "$backup_action" = "START" ]; then
   echo -n "{\"status\":\"running\"}" > "$backup_json"
-  chgrp admin "$backup_json"
+  chgrp 997 "$backup_json"
 
   start_backup  || fail_and_exit
 elif [ "$backup_action" = "RESTORE" ]; then

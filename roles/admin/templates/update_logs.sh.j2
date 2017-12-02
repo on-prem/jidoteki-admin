@@ -33,7 +33,7 @@ fail_and_exit() {
 compress_log_files() {
   echo "[`date +%s`][{{ admin_type }}] Generating compressed logs.tar.gz. Please wait.." 2>&1
   tar --ignore-failed-read -zcf $log_file ${log_dirs}
-  chmod 640 $log_file ; chown root:admin $log_file
+  chmod 640 $log_file ; chown 0:997 $log_file
   mv -f $log_file ${admin_dir}/home/sftp/uploads/
   echo "[`date +%s`][{{ admin_type }}] Generated logs successful" 2>&1
 }

@@ -35,17 +35,17 @@ move_settings_files() {
 
   if [ -f "app.json" ]; then
     mv -f app.json ${admin_dir}/etc/
-    chmod 640 "${admin_dir}/etc/app.json" ; chown root:admin "${admin_dir}/etc/app.json"
+    chmod 640 "${admin_dir}/etc/app.json" ; chown 0:997 "${admin_dir}/etc/app.json"
   fi
 
   if [ -f "network.json" ]; then
     mv -f network.json ${admin_dir}/etc/
-    chmod 640 "${admin_dir}/etc/network.json" ; chown root:admin "${admin_dir}/etc/network.json"
+    chmod 640 "${admin_dir}/etc/network.json" ; chown 0:997 "${admin_dir}/etc/network.json"
   fi
 
   if [ -f "network.conf" ]; then
     mv -f network.conf /usr/local/etc/
-    chmod 640 "/usr/local/etc/network.conf" ; chown root:admin "/usr/local/etc/network.conf"
+    chmod 640 "/usr/local/etc/network.conf" ; chown 0:997 "/usr/local/etc/network.conf"
   fi
 }
 

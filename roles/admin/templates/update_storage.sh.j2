@@ -34,12 +34,12 @@ move_settings_files() {
 
   if [ -f "storage.json" ]; then
     mv -f storage.json ${admin_dir}/etc/
-    chmod 640 "${admin_dir}/etc/storage.json" ; chown root:admin "${admin_dir}/etc/storage.json"
+    chmod 640 "${admin_dir}/etc/storage.json" ; chown 0:997 "${admin_dir}/etc/storage.json"
   fi
 
   if [ -f "storage.conf" ]; then
     mv -f storage.conf /usr/local/etc/
-    chmod 640 "/usr/local/etc/storage.conf" ; chown root:admin "/usr/local/etc/storage.conf"
+    chmod 640 "/usr/local/etc/storage.conf" ; chown 0:997 "/usr/local/etc/storage.conf"
   fi
 }
 

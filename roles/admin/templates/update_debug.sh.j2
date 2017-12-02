@@ -66,7 +66,7 @@ compress_debug_files() {
   [ -f "${admin_dir}/home/sftp/uploads/${log_file}" ] && { openssl enc -aes-256-cbc -salt -in $log_file -out ${log_file}.enc -pass file:./debug.key || return 1; }
 
   tar -cvf debug-bundle.tar *.enc && \
-  chmod 640 debug-bundle.tar ; chown root:admin debug-bundle.tar && \
+  chmod 640 debug-bundle.tar ; chown 0:997 debug-bundle.tar && \
   mv -f debug-bundle.tar ${admin_dir}/home/sftp/uploads/ || return 1
 }
 

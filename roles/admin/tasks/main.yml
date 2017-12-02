@@ -1,11 +1,13 @@
 # Jidoteki Admin tasks
+#
+# user/group 998 = sftpadmin, 997 = admin, 50 = staff, 0 = root
 
 - name: Create admin home directories
   file: >
     state=directory
     path={{ prefix }}{{ item }}
-    owner=admin
-    group=admin
+    owner=997
+    group=997
     mode=1750
     recurse=no
   with_items:
@@ -18,8 +20,8 @@
   file: >
     state=directory
     path={{ prefix }}{{ item }}
-    owner=root
-    group=root
+    owner=0
+    group=0
     mode=0755
   with_items:
     - "{{ admin_path }}/bin"
@@ -32,8 +34,8 @@
   file: >
     state=directory
     path={{ prefix }}{{ item }}
-    owner=sftpadmin
-    group=admin
+    owner=998
+    group=997
     mode=0770
     recurse=no
   with_items:
@@ -45,8 +47,8 @@
   file: >
     state=directory
     path={{ prefix }}{{ item }}
-    owner=root
-    group=admin
+    owner=0
+    group=997
     mode=1775
   with_items:
     - "{{ admin_path }}/log"
@@ -58,8 +60,8 @@
   template: >
     src={{ item }}.j2
     dest="{{ prefix }}{{ admin_path }}/bin/{{ item }}"
-    owner=root
-    group=root
+    owner=0
+    group=0
     mode=0755
   with_items:
     - update_backup.sh
@@ -80,8 +82,8 @@
   template: >
     src=wrapper.sh.j2
     dest="{{ prefix }}{{ admin_path }}/bin/wrapper.sh"
-    owner=root
-    group=admin
+    owner=0
+    group=997
     mode=0750
   tags:
     - admin

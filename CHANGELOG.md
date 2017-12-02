@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.18.0 (2017-12-02)
+
+  * Ensure directories are created with uids instead of usernames
+  * Ensure chown and chgrp permissions are assigned to uids
+  * Ensure sudo commands use the uid
+
 ## 1.17.1 (2017-11-02)
 
   * Fix regression in ansible role creation of backup script template
