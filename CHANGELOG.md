@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.19.0 (2017-12-17)
+
+  * Dry-run stunnel to check for valid TLS certs
+
 ## 1.18.0 (2017-12-02)
 
   * Ensure directories are created with uids instead of usernames
