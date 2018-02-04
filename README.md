@@ -10,6 +10,7 @@ This repository contains bash scripts, ansible roles, and other files needed to 
 
 * Ansible 1.5.x
 * curl
+* git
 * sha1sum (from core-utils)
 * [symlinktool](https://github.com/aw/tinycore-symlinktool) for running backups
 * [openssl](https://openssl.org/) v1.0.2+, for validating TLS certs
@@ -32,6 +33,7 @@ Here is what the `admin` role does:
   * Create admin sftp uploads directory
   * Add SSH admin management scripts
   * Add SSH admin wrapper script
+  * Add SSH admin lib dependencies
 
 # Changelog
 
