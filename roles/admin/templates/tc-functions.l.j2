@@ -4,6 +4,10 @@
 # https://unscramble.co.jp
 #
 # VERSION: {{ jidoteki_admin_version }}
+#
+# NOTE:
+#   All functions must be prefixed with tc-, to prevent clashes with existing code / libraries
+#   (exception for (colour) and (error-codes), which can be overwritten by other implementations
 
 (setq
   *Root "/"
@@ -23,21 +27,6 @@
 (seed (in "/dev/urandom" (rd 20)))
 
 ### Internal
-
-# colourizes the console
-# returns NIL in all cases
-[de colour (Colour)
-  (err "/dev/null"
-    (let Col (lowc Colour)
-      (cond ((assoc Col *Colours) (call 'tput "bold") (call 'tput "setaf" (cdr @)))
-            ((= Col "bold")       (call 'tput "bold"))
-            ((= Col "clear")      (call 'clear))
-            ((= Col "cursor")     (call 'tput "cvvis"))
-            ((= Col "nocursor")   (call 'tput "civis"))
-            (T                    (call 'tput "sgr0")) ) )
-    NIL ]
-
-[de color @ (pass colour) ] # for Americans
 
 [de error-codes
   ("TC0001" "Missing command line arguments")
@@ -109,22 +98,43 @@
 
 ### Public
 
-(de getbootparam (Param Cmdline)
+# colourizes the console
+# returns NIL in all cases
+[de colour (Colour)
+  (err "/dev/null"
+    (let Col (lowc Colour)
+      (cond ((assoc Col *Colours) (call 'tput "bold") (call 'tput "setaf" (cdr @)))
+            ((= Col "bold")       (call 'tput "bold"))
+            ((= Col "clear")      (call 'clear))
+            ((= Col "cursor")     (call 'tput "cvvis"))
+            ((= Col "nocursor")   (call 'tput "civis"))
+            (T                    (call 'tput "sgr0")) ) )
+    NIL ]
+
+# for Americans
+[de color @ (pass colour) ]
+
+# obtain the value of a boot parameter, example: init=/sbin/init, returns /sbin/init
+(de tc-getbootparam (Param Cmdline)
     (tc-getparam Param Cmdline) )
 
-(de checkbootparam (Param Cmdline)
+# returns T if a boot parameter is set, NIL if it's not
+(de tc-checkbootparam (Param Cmdline)
     (when (assoc Param (tc-parse-options Cmdline))
           T ) )
 
+# outputs an error message and its details to STDERR
 (de tc-stderr (Code Details)
   (tc-error-output (tc-error Code Details))
   (bye 65) )
 
+# outputs an app's version, summary, and options to STDOUT using data from APP_INFO and APP_HELP
 [de tc-show-help ()
   (tc-show-version)
   (tc-show-summary)
   (tc-show-options) ]
 
+# parses the command line options and outputs the result to STDOUT
 [de tc-opts (Noargs?)
   (unless (or (argv) Noargs?) (tc-show-help) (bye))
   (mapcar '((N)
@@ -133,6 +143,7 @@
                   (--help     (tc-show-help) (bye)) ) )
           (argv) ]
 
+# validates a command line option to ensure it contains the correct number of arguments
 [de tc-validate-option (Arg Num)
   (unless Num (tc-stderr "TC0002" Arg))
 
@@ -140,6 +151,7 @@
       (tc-stderr "TC0001" (pack Arg " <arg1>" (when (> Num 1) (pack " .. <arg" Num ">"))))
       (make (link Arg) (do Num (link (opt)))) ]
 
+# parses the command line options and validates the additional arguments
 [de tc-getopts (Options)
   (tc-opts)
   (make
@@ -191,4 +203,5 @@
 # JSON library
 (when (info *Json_lib) (err "/dev/null" (load *Json_lib)))
 
+# use this variable to verify if the above functions have been loaded or not
 (setq *Tc_functions_loaded T)
