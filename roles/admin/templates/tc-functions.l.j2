@@ -1,0 +1,194 @@
+# Generic functions
+#
+# Copyright (c) 2016-2018 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# https://unscramble.co.jp
+#
+# VERSION: {{ jidoteki_admin_version }}
+
+(setq
+  *Root "/"
+  *Tc_lib_path  (if (sys "TC_LIB_PATH") @ "/opt/jidoteki/tinyadmin/lib")
+  *Semver_lib   (pack *Tc_lib_path "/.modules/picolisp-semver/HEAD/semver.l")
+  *Json_lib     (pack *Tc_lib_path "/.modules/picolisp-json/HEAD/json.l") )
+
+(de *Colours
+  ("red"      . 1)
+  ("green"    . 2)
+  ("yellow"   . 3)
+  ("blue"     . 4)
+  ("magenta"  . 5)
+  ("cyan"     . 6)
+  ("white"    . 7) )
+
+(seed (in "/dev/urandom" (rd 20)))
+
+### Internal
+
+# colourizes the console
+# returns NIL in all cases
+[de colour (Colour)
+  (err "/dev/null"
+    (let Col (lowc Colour)
+      (cond ((assoc Col *Colours) (call 'tput "bold") (call 'tput "setaf" (cdr @)))
+            ((= Col "bold")       (call 'tput "bold"))
+            ((= Col "clear")      (call 'clear))
+            ((= Col "cursor")     (call 'tput "cvvis"))
+            ((= Col "nocursor")   (call 'tput "civis"))
+            (T                    (call 'tput "sgr0")) ) )
+    NIL ]
+
+[de color @ (pass colour) ] # for Americans
+
+[de error-codes
+  ("TC0001" "Missing command line arguments")
+  ("TC0002" "Invalid command line option") ]
+
+[de tc-error (Code Details)
+  (let Error (assoc Code error-codes)
+    (list (cons "File"    (cadr (file)))
+          (cons "Code"    (car Error))
+          (cons "Message" (cadr Error))
+          (cons "Details" Details) ]
+
+(de tc-split-value (Value Separator)
+    (mapcar pack
+            (split (chop Value) Separator) ) )
+
+(de tc-parse-options (Options)
+    (mapcar '((N) (tc-split-value N "="))
+            (tc-split-value Options " ") ) )
+
+(de tc-getparam (Param Options)
+    (cadr (assoc Param (tc-parse-options Options))) )
+
+[de tc-version ()
+  (pack (cdr (assoc "name" APP_INFO)) " v"
+        (cdr (assoc "version" APP_INFO)) "^J"
+        "Copyright "
+        (cdr (assoc "copyright" APP_INFO)) "^J"
+        "License "
+        (cdr (assoc "license" APP_INFO)) ]
+
+[de tc-summary ()
+  (pack "^J"
+        (cdr (assoc "summary" APP_INFO)) "^J"
+        (cdr (assoc "source" APP_INFO)) "^J"
+        "^JUsage:^I^I"
+        (cdr (assoc "usage" APP_HELP)) "^J"
+        "^JExample:^I"
+        (cdr (assoc "example" APP_HELP)) "^J^J"
+        "Options:" ]
+
+[de tc-options (N)
+  (tab  (2 -10 5)
+        " "
+        (car N)
+        (cdr N) ]
+
+[de tc-error-stderr (Error)
+  (out 2
+    (prinl (glue ": " (extract cdr Error))) ]
+
+[de tc-error-generic (Error)
+  (out 2
+    (prinl Error) ]
+
+[de tc-error-output (Error)
+  (case (sys "TC_OUTPUT_TYPE")
+        ("json"   (tc-error-generic (encode Error)))
+        (T        (tc-error-stderr Error) ]
+
+(de tc-show-version ()
+  (prinl (tc-version)) )
+
+(de tc-show-summary ()
+  (prinl (tc-summary)) )
+
+[de tc-show-options ()
+  (mapcar tc-options (cdr (assoc "options" APP_HELP))) ]
+
+### Public
+
+(de getbootparam (Param Cmdline)
+    (tc-getparam Param Cmdline) )
+
+(de checkbootparam (Param Cmdline)
+    (when (assoc Param (tc-parse-options Cmdline))
+          T ) )
+
+(de tc-stderr (Code Details)
+  (tc-error-output (tc-error Code Details))
+  (bye 65) )
+
+[de tc-show-help ()
+  (tc-show-version)
+  (tc-show-summary)
+  (tc-show-options) ]
+
+[de tc-opts (Noargs?)
+  (unless (or (argv) Noargs?) (tc-show-help) (bye))
+  (mapcar '((N)
+            (case N
+                  (--version  (tc-show-version) (bye))
+                  (--help     (tc-show-help) (bye)) ) )
+          (argv) ]
+
+[de tc-validate-option (Arg Num)
+  (unless Num (tc-stderr "TC0002" Arg))
+
+  (if (< (size (argv)) Num)
+      (tc-stderr "TC0001" (pack Arg " <arg1>" (when (> Num 1) (pack " .. <arg" Num ">"))))
+      (make (link Arg) (do Num (link (opt)))) ]
+
+[de tc-getopts (Options)
+  (tc-opts)
+  (make
+    (while  (opt)
+            (link (tc-validate-option @ (cdr (assoc @ Options))) ]
+
+# pipes Msg to Cmd, returns T if no error
+[de tc-call (Cmd Msg)
+  (pipe (err NIL (out Cmd (prin Msg)))
+    (unless (line) T) ]
+
+# pipes STDERR to STDOUT (one line only)
+[de tc-2>&1 (Cmd)
+  (pipe (err NIL (in Cmd (prinl (line T))))
+    (line T) ]
+
+# returns (T . Result) if STDOUT, (NIL . Result) if STDERR
+[de tc-stdouterr (Cmd)
+  (let Rand (tmp "stderr" (rand))
+    (if (info Rand)
+        (tc-stdouterr Cmd))
+        (let Result
+          (if (err Rand (in Cmd (line T)))
+              (cons T @)
+              (cons NIL (in Rand (line T))) )
+          (call 'rm "-f" Rand)
+          Result ]
+
+# tails N lines of a multi-line file and replaces ^J with \\n
+[de tc-multiline (Lines File)
+  (when (info File)
+        (in (list 'tail "-n" Lines File) (pack (replace (till (eof)) "^J" "\\n") ]
+
+# get the process ID from a string
+[de tc-pid (String)
+  (pack
+    (clip
+      (in
+        '(ps "-o" "comm,pid")
+        (from String)
+        (till " ")
+        (line) ]
+
+### External libraries
+
+# SemVer library
+(when (info *Semver_lib) (err "/dev/null" (load *Semver_lib)))
+
+# JSON library
+(when (info *Json_lib) (err "/dev/null" (load *Json_lib)))
+
+(setq *Tc_functions_loaded T)
