@@ -110,6 +110,17 @@
     mode=0755
     recurse=yes
   with_items:
-    - {{ jidoteki_lib_deps }}
+    - "{{ jidoteki_lib_deps }}"
+  tags:
+    - skip
+
+- name: Add SSH admin library deps files
+  shell: |
+    chdir={{ prefix }}{{ admin_path }}/lib
+    git clone {{ item.repo }} {{ item.dir }} && \
+    cd {{ item.dir }} && \
+    git checkout {{ item.ref }}
+  with_items:
+    - "{{ jidoteki_lib_deps }}"
   tags:
     - admin
