@@ -2,7 +2,7 @@
 #
 # Generic script for updating a {{ admin_type_lowcase }}
 #
-# Copyright (c) 2013-2016 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# Copyright (c) 2013-2018 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # http://unscramble.co.jp
 #
 # VERSION: {{ jidoteki_admin_version }}
@@ -15,15 +15,18 @@ tar_cmd=`which tar`
 openssl_cmd=`which openssl`
 sort_cmd=`which sort`
 admin_dir="{{ admin_path }}"
+disk_dir="/mnt/sda1"
 uploads_dir="${admin_dir}/home/sftp/uploads"
 update_log="${admin_dir}/log/update.log"
+percentage=0
 
 log_output() {
   tee -a "$update_log"
 }
 
 fail_and_exit() {
-  echo "failed" > "${admin_dir}/etc/status_update.txt"
+  update_status "failed"
+
   echo "[`date +%s`][{{ admin_type }}] Failed updating {{ admin_type_lowcase }}. Cleaning up.." | log_output
   exit 1
 }
@@ -40,9 +43,19 @@ log_error() {
 cleanup() {
   cd "${admin_dir}/tmp"
 
-  rm -rf software_package* update extracted
+  rm -rf software_package* update ${disk_dir}/tmp/extracted
   rm -f /tmp/update_vm.sh.task
+  [ -f "${uploads_dir}/${latest_package}" ] && rm -f "${uploads_dir}/${latest_package}"
+  true
 }
+
+update_status() {
+  echo "{\"status\":\"${1}\",\"percentage\":${percentage}}" > "${admin_dir}/etc/status_update.json"
+  echo "$1" > "${admin_dir}/etc/status_update.txt"
+}
+
+touch ${admin_dir}/etc/status_update.txt
+chgrp 997 ${admin_dir}/etc/status_update.txt
 
 if [ -f "/tmp/update_vm.sh.task" ]; then
   log_error "Update is already running" "E1004"
@@ -53,6 +66,9 @@ echo "$$" > /tmp/update_vm.sh.task
 
 # Find the highest version package uploaded to the appliance
 find_latest_package() {
+  percentage=20
+  update_status "running"
+
   cd "${uploads_dir}"
 
   # Note: this requires GNU sort from coreutils
@@ -65,22 +81,41 @@ find_latest_package() {
 
 # Decrypt and extract the update package with the updates.key
 decrypt_software_package() {
-  cd "${admin_dir}/tmp"
+  percentage=30
+  update_status "running"
 
-  [ -d "update" ] || mkdir update
-  [ -d "extracted" ] || mkdir extracted
+  [ -d "${disk_dir}/tmp" ] || mkdir -p ${disk_dir}/tmp
+  [ -d "${disk_dir}/tmp/extracted" ] || mkdir ${disk_dir}/tmp/extracted
+  [ -d "${admin_dir}/tmp/update" ] || mkdir ${admin_dir}/tmp/update
+
+  cd "${disk_dir}/tmp"
 
   umask 027
-  mv -f "${uploads_dir}/${latest_package}" "${admin_dir}/tmp/"
-  { $openssl_cmd aes-256-cbc -d -pass file:"${admin_dir}/etc/updates.key" -in "$latest_package" | $tar_cmd -xf - -C extracted; } || log_error "Error decrypting software update package" "E1005"
-  rm -f "$latest_package"
+  # decrypt and extract to fixed disk
+  { $openssl_cmd aes-256-cbc -d -pass file:"${admin_dir}/etc/updates.key" -in "${uploads_dir}/${latest_package}" | $tar_cmd -xf - -C extracted; } || log_error "Error decrypting software update package" "E1005"
+  percentage=40
+  update_status "running"
+
+  # remove package from memory
+  rm -f "${uploads_dir}/${latest_package}"
+
+  # verify signature
   $openssl_cmd dgst -sha256 -verify "${admin_dir}/etc/updates.pub" -signature extracted/software_package.tar.gz.sign extracted/software_package.tar.gz  || log_error "Error verifying software update package signature" "E1005"
-  $tar_cmd --no-same-owner --no-same-permissions -zxf extracted/software_package.tar.gz -C update || log_error "Error extracting software update package" "E1005"
+  percentage=50
+  update_status "running"
+
+  # extract contents to memory
+  $tar_cmd --no-same-owner --no-same-permissions -zxf extracted/software_package.tar.gz -C ${admin_dir}/tmp/update || log_error "Error extracting software update package" "E1005"
+
+  # remove contents from fixed disk
   rm -rf extracted
 }
 
 # Compare the server and package versions
 compare_versions() {
+  percentage=60
+  update_status "running"
+
   cd "${admin_dir}/tmp/update"
 
   # Only compare if both files exist
@@ -105,6 +140,9 @@ compare_versions() {
 
 # Update the {{ admin_type_lowcase }} and log the results
 update_appliance() {
+  percentage=70
+  update_status "running"
+
   cd "${admin_dir}/tmp/update"
 
   if [ -f "update.sh" ]; then
@@ -112,9 +150,14 @@ update_appliance() {
 
     chmod +x update.sh
     if ./update.sh; then
+      percentage=80
+      update_status "running"
+
       echo "Completed update at: `date`" | log_output
       return 0
     else
+      percentage=80
+
       if [ -f "${admin_dir}/etc/status_error_message.txt" ] && [ -f "${admin_dir}/etc/status_error_code.txt" ]; then
         fail_and_exit
       else
@@ -122,7 +165,9 @@ update_appliance() {
       fi
     fi
   else
-    echo "success" > "${admin_dir}/etc/status_update.txt"
+    percentage=90
+    update_status "success"
+
     echo "[`date +%s`][{{ admin_type }}] No update script found, skipping." | log_output
     exit 0
   fi
@@ -138,8 +183,10 @@ trap fail_and_exit SIGINT SIGTERM
 [ -f "$update_log" ] || touch "$update_log"
 chmod 664 "$update_log"
 chown 0:997 "$update_log"
-echo "running" > "${admin_dir}/etc/status_update.txt"
-chgrp 997 ${admin_dir}/etc/status_update.txt
+
+percentage=10
+update_status "running"
+
 echo "[`date +%s`][{{ admin_type }}] Updating {{ admin_type_lowcase }}. Please wait.." | log_output
 
 rm -f "${admin_dir}/etc/status_error_message.txt" "${admin_dir}/etc/status_error_code.txt"
@@ -149,6 +196,8 @@ decrypt_software_package  && \
 compare_versions          && \
 update_appliance          || log_error "Script error" "E1000"
 
-echo "success" > "${admin_dir}/etc/status_update.txt"
+percentage=100
+update_status "success"
+
 echo "[`date +%s`][{{ admin_type }}] Update successful" | log_output
 exit 0

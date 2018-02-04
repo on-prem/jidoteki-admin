@@ -1,0 +1,15 @@
+language: bash
+sudo: required
+cache: apt
+dist: precise
+
+before_script:
+  - wget http://software-lab.de/picoLisp-16.6.tgz -O /tmp/picolisp.tgz
+  - cd /tmp; tar -xf /tmp/picolisp.tgz
+  - cd /tmp/picoLisp/src64 && make
+  - export PATH=$PATH:/tmp/picoLisp
+  - sudo pip install ansible==1.8.4
+
+script:
+  - export PATH=$PATH:/tmp/picoLisp
+  - cd ${TRAVIS_BUILD_DIR} && make check PREFIX_DIR=/tmp/meta

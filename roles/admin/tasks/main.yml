@@ -2,6 +2,23 @@
 #
 # user/group 998 = sftpadmin, 997 = admin, 50 = staff, 0 = root
 
+- name: Create admin directory structure
+  file: >
+    state=directory
+    path={{ prefix }}{{ item }}
+    owner=0
+    group=0
+    mode=0755
+  with_items:
+    - "{{ admin_path }}"
+    - "{{ admin_path }}/bin"
+    - "{{ admin_path }}/tmp"
+    - "{{ admin_path }}/lib"
+    - "{{ admin_path }}/home/sftp"
+  tags:
+    - admin
+    - lib
+
 - name: Create admin home directories
   file: >
     state=directory
@@ -13,20 +30,6 @@
   with_items:
     - "{{ admin_path }}/home"
     - "{{ admin_path }}/home/.ssh"
-  tags:
-    - admin
-
-- name: Create admin directory structure
-  file: >
-    state=directory
-    path={{ prefix }}{{ item }}
-    owner=0
-    group=0
-    mode=0755
-  with_items:
-    - "{{ admin_path }}/bin"
-    - "{{ admin_path }}/tmp"
-    - "{{ admin_path }}/home/sftp"
   tags:
     - admin
 
@@ -87,3 +90,27 @@
     mode=0750
   tags:
     - admin
+
+- name: Add SSH admin library scripts
+  template: >
+    src={{ item }}.j2
+    dest="{{ prefix }}{{ admin_path }}/lib/{{ item }}"
+    owner=0
+    group=0
+    mode=0644
+  with_items:
+    - tc-functions.l
+  tags:
+    - admin
+    - lib
+
+- name: Add SSH admin library deps
+  git: >
+    dest={{ prefix }}{{ admin_path }}/lib/{{ item.dir }}
+    repo={{ item.repo }}
+    version={{ item.ref }}
+  with_items:
+    - "{{ jidoteki_lib_deps }}"
+  tags:
+    - admin
+    - lib
