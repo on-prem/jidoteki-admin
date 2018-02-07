@@ -2,6 +2,23 @@
 #
 # user/group 998 = sftpadmin, 997 = admin, 50 = staff, 0 = root
 
+- name: Create admin directory structure
+  file: >
+    state=directory
+    path={{ prefix }}{{ item }}
+    owner=0
+    group=0
+    mode=0755
+  with_items:
+    - "{{ admin_path }}"
+    - "{{ admin_path }}/bin"
+    - "{{ admin_path }}/tmp"
+    - "{{ admin_path }}/lib"
+    - "{{ admin_path }}/home/sftp"
+  tags:
+    - admin
+    - lib
+
 - name: Create admin home directories
   file: >
     state=directory
@@ -15,22 +32,6 @@
     - "{{ admin_path }}/home/.ssh"
   tags:
     - admin
-
-- name: Create admin directory structure
-  file: >
-    state=directory
-    path={{ prefix }}{{ item }}
-    owner=0
-    group=0
-    mode=0755
-  with_items:
-    - "{{ admin_path }}/bin"
-    - "{{ admin_path }}/tmp"
-    - "{{ admin_path }}/lib"
-    - "{{ admin_path }}/home/sftp"
-  tags:
-    - admin
-    - lib
 
 - name: Create admin sftp uploads directory
   file: >

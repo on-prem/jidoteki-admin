@@ -1,4 +1,4 @@
-# tinycore-scripts Makefile
+# Jidoteki Admin Makefile
 
 PIL_MODULE_DIR ?= .modules
 REPO_PREFIX ?= https://github.com/aw
@@ -21,6 +21,7 @@ TEST_REF ?= v2.1.0
 .PHONY: all check run-tests
 
 all:
+		ansible-playbook jidoteki.yml -c local -i images.inventory -e prefix=$(PREFIX_DIR) --tags=admin -s
 
 $(JSON_DIR):
 		mkdir -p $(JSON_DIR) && \
