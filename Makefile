@@ -3,7 +3,7 @@
 .PHONY: all check run-tests
 
 all:
-		ansible-playbook jidoteki.yml -c local -i images.inventory -e prefix=$(PREFIX_DIR) --tags=admin -s -vvvv
+		ansible-playbook jidoteki.yml -c local -i images.inventory -e prefix=$(PREFIX_DIR) --tags=admin -s -v
 
 check: all run-tests
 
