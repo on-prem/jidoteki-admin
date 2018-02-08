@@ -1,6 +1,7 @@
 language: bash
-sudo: false
+sudo: required
 cache: apt
+dist: precise
 
 before_script:
   - wget http://software-lab.de/picoLisp-17.12.tgz -O /tmp/picolisp.tgz
