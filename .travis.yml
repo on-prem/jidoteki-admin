@@ -9,4 +9,4 @@ before_script:
 
 script:
   - export PATH=$PATH:/tmp/picoLisp
-  - cd ${TRAVIS_BUILD_DIR} && make check
+  - cd ${TRAVIS_BUILD_DIR} && make check PREFIX_DIR=/tmp

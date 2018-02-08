@@ -11,7 +11,7 @@
 
 (setq
   *Root "/"
-  *Tc_lib_path  (if (sys "TC_LIB_PATH") @ "/opt/jidoteki/tinyadmin/lib")
+  *Tc_lib_path  (pack (if (sys "JIDO_ADMIN_PATH") @ "/opt/jidoteki/tinyadmin") "/lib")
   *Semver_lib   (pack *Tc_lib_path "/.modules/picolisp-semver/HEAD/semver.l")
   *Json_lib     (pack *Tc_lib_path "/.modules/picolisp-json/HEAD/json.l") )
 
