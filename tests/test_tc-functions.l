@@ -1,5 +1,3 @@
-(unless *Tc_functions_loaded (load (pack (car (file)) "../roles/admin/templates/tc-functions.l.j2")))
-
 (prinl "^J  Testing TinyCore scripts^J")
 
 (setq
