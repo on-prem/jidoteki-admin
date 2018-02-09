@@ -8,4 +8,4 @@ all:
 check: all run-tests
 
 run-tests:
-		JIDO_ADMIN_PATH=$(PREFIX_DIR)/opt/jidoteki/tinyadmin PIL_NAMESPACES=false ./test.l
+		JIDO_ADMIN_PATH=$(PREFIX_DIR)/opt/jidoteki/tinyadmin ./test.l
