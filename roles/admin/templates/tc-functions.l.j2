@@ -200,10 +200,10 @@
 ### External libraries
 
 # SemVer library
-(when (info *Semver_lib) (err "/dev/null" (load *Semver_lib)))
+(when (info *Semver_lib) (undef 'MODULE_INFO) (err "/dev/null" (load *Semver_lib)))
 
 # JSON library
-(when (info *Json_lib) (err "/dev/null" (load *Json_lib)))
+(when (info *Json_lib) (undef 'MODULE_INFO) (err "/dev/null" (load *Json_lib)))
 
 # use this variable to verify if the above functions have been loaded or not
 (setq *Tc_functions_loaded T)
