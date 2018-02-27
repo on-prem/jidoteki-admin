@@ -105,12 +105,12 @@
 [de colour (Colour)
   (err "/dev/null"
     (let Col (lowc Colour)
-      (cond ((assoc Col *Colours) (call 'tput "bold") (call 'tput "setaf" (cdr @)))
-            ((= Col "bold")       (call 'tput "bold"))
+      (cond ((assoc Col *Colours) (call '/usr/local/bin/tput "bold") (call '/usr/local/bin/tput "setaf" (cdr @)))
+            ((= Col "bold")       (call '/usr/local/bin/tput "bold"))
             ((= Col "clear")      (call 'clear))
-            ((= Col "cursor")     (call 'tput "cvvis"))
-            ((= Col "nocursor")   (call 'tput "civis"))
-            (T                    (call 'tput "sgr0")) ) )
+            ((= Col "cursor")     (call '/usr/local/bin/tput "cvvis"))
+            ((= Col "nocursor")   (call '/usr/local/bin/tput "civis"))
+            (T                    (call '/usr/local/bin/tput "sgr0")) ) )
     NIL ]
 
 # for Americans
