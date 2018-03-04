@@ -4,6 +4,7 @@
 
   * Merge 'jidometa-scripts' repo into this one
   * Add Travis tests for tc-functions helpers
+  * Renamed 'Jidoteki' to 'On-Prem'
 
 ## 1.19.0 (2017-12-17)
 
