@@ -12,7 +12,7 @@ This repository contains bash scripts, ansible roles, and other files needed to 
 * curl
 * git
 * sha1sum (from core-utils)
-* [symlinktool](https://github.com/aw/tinycore-symlinktool) for running backups
+* [symlinktool](https://github.com/on-prem/tinycore-symlinktool) for running backups
 * [openssl](https://openssl.org/) v1.0.2+, for validating TLS certs
 * [stunnel](https://www.stunnel.org) for validating TLS certs
 

@@ -7,7 +7,7 @@
   ("name"      "test_tc-functions.l")
   ("version"   "0.0.3")
   ("summary"   "Unit tests'")
-  ("source"    "https://github.com/Jidoteki/tinycore-scripts")
+  ("source"    "https://github.com/on-prem/tinycore-scripts")
   ("author"    "Alexander Williams")
   ("license"   "MIT")
   ("copyright" "(c) 2016 Alexander Williams, Unscramble <license@unscramble.jp>") ]
