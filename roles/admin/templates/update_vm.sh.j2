@@ -2,7 +2,7 @@
 #
 # Generic script for updating a {{ admin_type_lowcase }}
 #
-# Copyright (c) 2013-2016 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# Copyright (c) 2013-2018 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # http://unscramble.co.jp
 #
 # VERSION: {{ jidoteki_admin_version }}
@@ -15,6 +15,7 @@ tar_cmd=`which tar`
 openssl_cmd=`which openssl`
 sort_cmd=`which sort`
 admin_dir="{{ admin_path }}"
+disk_dir="/mnt/sda1"
 uploads_dir="${admin_dir}/home/sftp/uploads"
 update_log="${admin_dir}/log/update.log"
 percentage=0
@@ -42,8 +43,10 @@ log_error() {
 cleanup() {
   cd "${admin_dir}/tmp"
 
-  rm -rf software_package* update extracted
+  rm -rf software_package* update ${disk_dir}/tmp/extracted
   rm -f /tmp/update_vm.sh.task
+  [ -f "${uploads_dir}/${latest_package}" ] && rm -f "${uploads_dir}/${latest_package}"
+  true
 }
 
 update_status() {
@@ -81,23 +84,30 @@ decrypt_software_package() {
   percentage=30
   update_status "running"
 
-  cd "${admin_dir}/tmp"
+  [ -d "${disk_dir}/tmp" ] || mkdir ${disk_dir}/tmp
+  [ -d "${disk_dir}/tmp/extracted" ] || mkdir ${disk_dir}/tmp/extracted
+  [ -d "${admin_dir}/tmp/update" ] || mkdir ${admin_dir}/tmp/update
 
-  [ -d "update" ] || mkdir update
-  [ -d "extracted" ] || mkdir extracted
+  cd "${disk_dir}/tmp"
 
   umask 027
-  mv -f "${uploads_dir}/${latest_package}" "${admin_dir}/tmp/"
-  { $openssl_cmd aes-256-cbc -d -pass file:"${admin_dir}/etc/updates.key" -in "$latest_package" | $tar_cmd -xf - -C extracted; } || log_error "Error decrypting software update package" "E1005"
+  # decrypt and extract to fixed disk
+  { $openssl_cmd aes-256-cbc -d -pass file:"${admin_dir}/etc/updates.key" -in "${uploads_dir}/${latest_package}" | $tar_cmd -xf - -C extracted; } || log_error "Error decrypting software update package" "E1005"
   percentage=40
   update_status "running"
 
-  rm -f "$latest_package"
+  # remove package from memory
+  rm -f "${uploads_dir}/${latest_package}"
+
+  # verify signature
   $openssl_cmd dgst -sha256 -verify "${admin_dir}/etc/updates.pub" -signature extracted/software_package.tar.gz.sign extracted/software_package.tar.gz  || log_error "Error verifying software update package signature" "E1005"
   percentage=50
   update_status "running"
 
-  $tar_cmd --no-same-owner --no-same-permissions -zxf extracted/software_package.tar.gz -C update || log_error "Error extracting software update package" "E1005"
+  # extract contents to memory
+  $tar_cmd --no-same-owner --no-same-permissions -zxf extracted/software_package.tar.gz -C ${admin_dir}/tmp/update || log_error "Error extracting software update package" "E1005"
+
+  # remove contents from fixed disk
   rm -rf extracted
 }
 

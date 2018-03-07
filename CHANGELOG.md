@@ -2,6 +2,7 @@
 
 ## 1.20.0 (2018-02-04)
 
+  * Update process uses fixed disk temporarily, reduces memory requirement for update packages
   * Merge 'jidometa-scripts' repo into this one
   * Add Travis tests for tc-functions helpers
   * Renamed 'Jidoteki' to 'On-Prem'
