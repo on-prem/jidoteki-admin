@@ -84,7 +84,7 @@ decrypt_software_package() {
   percentage=30
   update_status "running"
 
-  [ -d "${disk_dir}/tmp" ] || mkdir ${disk_dir}/tmp
+  [ -d "${disk_dir}/tmp" ] || mkdir -p ${disk_dir}/tmp
   [ -d "${disk_dir}/tmp/extracted" ] || mkdir ${disk_dir}/tmp/extracted
   [ -d "${admin_dir}/tmp/update" ] || mkdir ${admin_dir}/tmp/update
 
