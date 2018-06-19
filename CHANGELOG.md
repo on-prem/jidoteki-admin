@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.21.0 (2018-06-19)
+
+  * Update JSON dependency to v3.9.0
+
 ## 1.20.0 (2018-02-04)
 
   * Update process uses fixed disk temporarily, reduces memory requirement for update packages
