@@ -2,7 +2,7 @@
 #
 # Generic script for updating TLS certificates
 #
-# Copyright (c) 2013-2017 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# Copyright (c) 2013-2018 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # https://unscramble.co.jp
 #
 # VERSION: {{ jidoteki_admin_version }}
@@ -76,11 +76,14 @@ validate_ca() {
     ca_expired=`openssl x509 -in ca.pem -noout -checkend 0 -enddate`
     [ ! "$?" -eq 0 ] && echo "WARNING: CA Certificate is expired: $ca_expired" 2>&1 | tee -a "${admin_dir}/log/update_certs.log"
 
+    dos2unix ca.pem
     mv -f ca.pem "${admin_dir}/tmp/enterprise-ca.crt"
   fi
 }
 
 move_certs() {
+  dos2unix appliance.pem
+  dos2unix appliance.key
   mv -f appliance.pem "${admin_dir}/tmp/enterprise.crt"
   mv -f appliance.key "${admin_dir}/tmp/enterprise.key"
 }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.23.0 (2018-07-03)
+
+  * Convert text files from windows to unix (certs). #20
+
 ## 1.22.0 (2018-06-29)
 
   * Update JSON dependency to v3.10.0
