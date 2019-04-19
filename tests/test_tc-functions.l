@@ -5,12 +5,12 @@
 
 [de APP_INFO
   ("name"      "test_tc-functions.l")
-  ("version"   "0.0.3")
+  ("version"   "0.0.4")
   ("summary"   "Unit tests'")
   ("source"    "https://github.com/on-prem/tinycore-scripts")
   ("author"    "Alexander Williams")
   ("license"   "MIT")
-  ("copyright" "(c) 2016 Alexander Williams, Unscramble <license@unscramble.jp>") ]
+  ("copyright" "(c) 2016-2019 Alexander Williams, Unscramble <license@unscramble.jp>") ]
 
 [de APP_HELP
   ("usage"     "test.l")
@@ -55,7 +55,7 @@
   (let Result
                   "{\"File\":\"test_tc-functions.l\",\"Code\":\"TC0001\",\"Message\":\"Invalid command line argument\",\"Details\":\"--testing\"}"
     (assert-equal       Result
-                        (err "/dev/null" (tc-error-generic (encode (tc-error "TC0001" "--testing"))))
+                        (err "/dev/null" (tc-error-generic (json-encode (tc-error "TC0001" "--testing"))))
                         "Ensure tc-error-output returns an error string in JSON" ) ]
 
 [de test-tc-show-version-empty ()
@@ -77,14 +77,14 @@
 [de test-tc-json-decode ()
   (let Json "{\"test\":\"string\"}"
     (assert-equal       (list (cons "test" "string"))
-                        (decode Json)
-                        "Ensure '(decode)' can decode a JSON string" ]
+                        (json-decode Json)
+                        "Ensure '(json-decode)' can decode a JSON string" ]
 
 [de test-tc-json-encode ()
   (let Json (list (cons "test" "string"))
     (assert-equal       "{\"test\":\"string\"}"
-                        (encode Json)
-                        "Ensure '(encode)' can encode a JSON string" ]
+                        (json-encode Json)
+                        "Ensure '(json-encode)' can encode a JSON string" ]
 
 [de test-tc-call-t ()
   (assert-t           (tc-call (list 'true))
