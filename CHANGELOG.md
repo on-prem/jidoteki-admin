@@ -3,6 +3,7 @@
 ## 1.23.0 (2019-04-19)
 
   * Update picolisp-unit dependency to v3.0.0
+  * Update picolisp-semver dependency to v0.11.0
   * Update JSON dependency to v4.0.0
   * Convert text files from windows to unix (certs). #20
 

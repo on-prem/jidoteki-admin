@@ -13,7 +13,7 @@ jidoteki_lib_deps:
     ref: v4.0.0
   - repo: https://github.com/aw/picolisp-semver.git
     dir: .modules/picolisp-semver/HEAD
-    ref: v0.10.0
+    ref: v0.11.0
   - repo: https://github.com/aw/picolisp-unit.git
     dir: .modules/picolisp-unit/HEAD
     ref: v3.0.0
