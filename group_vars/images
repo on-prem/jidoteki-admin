@@ -10,10 +10,10 @@ jidoteki_admin_version: 1.23.0
 jidoteki_lib_deps:
   - repo: https://github.com/aw/picolisp-json.git
     dir: .modules/picolisp-json/HEAD
-    ref: v3.10.0
+    ref: v4.0.0
   - repo: https://github.com/aw/picolisp-semver.git
     dir: .modules/picolisp-semver/HEAD
     ref: v0.10.0
   - repo: https://github.com/aw/picolisp-unit.git
     dir: .modules/picolisp-unit/HEAD
-    ref: v2.1.0
+    ref: v3.0.0

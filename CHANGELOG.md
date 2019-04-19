@@ -1,7 +1,9 @@
 # Changelog
 
-## 1.23.0 (2018-07-03)
+## 1.23.0 (2019-04-19)
 
+  * Update picolisp-unit dependency to v3.0.0
+  * Update JSON dependency to v4.0.0
   * Convert text files from windows to unix (certs). #20
 
 ## 1.22.0 (2018-06-29)

@@ -1,6 +1,6 @@
 # On-Prem virtual appliance & live image administration
 
-[![GitHub release](https://img.shields.io/github/release/on-prem/jidoteki-admin.svg)](https://on-premises.com) [![Build Status](https://travis-ci.org/on-prem/jidoteki-admin.svg?branch=master)](https://travis-ci.org/on-prem/jidoteki-admin)  [![Dependency](https://img.shields.io/badge/[deps]&#32;picolisp--semver-v0.10.0-ff69b4.svg)](https://github.com/aw/picolisp-semver) [![Dependency](https://img.shields.io/badge/[deps]&#32;picolisp--json-v3.10.0-ff69b4.svg)](https://github.com/aw/picolisp-json) [![Dependency](https://img.shields.io/badge/[deps]&#32;picolisp--unit-v2.1.0-ff69b4.svg)](https://github.com/aw/picolisp-unit.git)
+[![GitHub release](https://img.shields.io/github/release/on-prem/jidoteki-admin.svg)](https://on-premises.com) [![Build Status](https://travis-ci.org/on-prem/jidoteki-admin.svg?branch=master)](https://travis-ci.org/on-prem/jidoteki-admin)  [![Dependency](https://img.shields.io/badge/[deps]&#32;picolisp--semver-v0.10.0-ff69b4.svg)](https://github.com/aw/picolisp-semver) [![Dependency](https://img.shields.io/badge/[deps]&#32;picolisp--json-v4.0.0-ff69b4.svg)](https://github.com/aw/picolisp-json) [![Dependency](https://img.shields.io/badge/[deps]&#32;picolisp--unit-v3.0.0-ff69b4.svg)](https://github.com/aw/picolisp-unit.git)
 
 [On-Prem](https://on-premises.com) installs the `On-Prem Admin` package in `/opt/jidoteki`.
 
@@ -12,6 +12,7 @@ This repository contains bash scripts, ansible roles, and other files needed to 
 * curl
 * git
 * sha1sum (from core-utils)
+* dos2unix (from busybox)
 * [symlinktool](https://github.com/on-prem/tinycore-symlinktool) for running backups
 * [openssl](https://openssl.org/) v1.0.2+, for validating TLS certs
 * [stunnel](https://www.stunnel.org) for validating TLS certs

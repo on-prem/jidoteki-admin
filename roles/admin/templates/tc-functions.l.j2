@@ -9,8 +9,6 @@
 #   All functions must be prefixed with tc-, to prevent clashes with existing code / libraries
 #   (exception for (colour) and (error-codes), which can be overwritten by other implementations
 
-(sys "PIL_NAMESPACES" "false")
-
 (setq
   *Root "/"
   *Tc_lib_path  (pack (if (sys "JIDO_ADMIN_PATH") @ "/opt/jidoteki/tinyadmin") "/lib")
