@@ -65,7 +65,7 @@
                           "Ensure tc-show-version returns an 'empty' string" ]
 
 [de test-tc-show-version-full ()
-  (assert-equal         "test_tc-functions.l v0.0.3^JCopyright (c) 2016 Alexander Williams, Unscramble <license@unscramble.jp>^JLicense MIT"
+  (assert-equal         "test_tc-functions.l v0.0.4^JCopyright (c) 2016-2019 Alexander Williams, Unscramble <license@unscramble.jp>^JLicense MIT"
                         (out "/dev/null" (tc-show-version))
                         "Ensure tc-show-version returns version info" ]
 
