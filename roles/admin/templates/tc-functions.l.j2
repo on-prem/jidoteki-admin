@@ -1,6 +1,6 @@
 # Generic functions
 #
-# Copyright (c) 2016-2018 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# Copyright (c) 2016-2019 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # https://unscramble.co.jp
 #
 # VERSION: {{ jidoteki_admin_version }}
@@ -205,3 +205,7 @@
 
 # use this variable to verify if the above functions have been loaded or not
 (setq *Tc_functions_loaded T)
+
+# backward compatible helpers for missing public JSON functions
+(de encode @ (pass json-encode))
+(de decode @ (pass json-decode))

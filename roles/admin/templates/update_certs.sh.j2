@@ -2,7 +2,7 @@
 #
 # Generic script for updating TLS certificates
 #
-# Copyright (c) 2013-2018 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# Copyright (c) 2013-2019 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # https://unscramble.co.jp
 #
 # VERSION: {{ jidoteki_admin_version }}
@@ -31,7 +31,7 @@ fail_and_exit() {
 cleanup() {
   cd "${admin_dir}/tmp"
 
-  rm -f /tmp/update_certs.sh.task
+  rm -f /tmp/update_certs.sh.task ${uploads_dir}/ca.pem ${uploads_dir}/appliance.pem ${uploads_dir}/appliance.key
 }
 
 ################
@@ -137,6 +137,9 @@ replace_old_certs() {
 
 trap cleanup EXIT
 trap 'exit 127' INT
+
+touch ${admin_dir}/etc/status_certs.txt
+chgrp 997 ${admin_dir}/etc/status_certs.txt
 
 echo "running" > "${admin_dir}/etc/status_certs.txt"
 echo "[`date +%s`][{{ admin_type }}] Validating and adding TLS certificates" 2>&1 | tee -a "${admin_dir}/log/update_certs.log"

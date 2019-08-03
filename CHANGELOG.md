@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.23.1 (2019-07-31)
+
+  * Fix regression, add backward compatible helpers for missing public JSON functions
+  * Ensure temporary TLS certificates are removed on failure. #22
+  * Ensure status_certs.txt has correct permissions
+
 ## 1.23.0 (2019-04-19)
 
   * Update picolisp-unit dependency to v3.0.0
