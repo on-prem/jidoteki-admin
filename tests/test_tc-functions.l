@@ -78,13 +78,19 @@
   (let Json "{\"test\":\"string\"}"
     (assert-equal       (list (cons "test" "string"))
                         (json-decode Json)
-                        "Ensure '(json-decode)' can decode a JSON string" ]
+                        "Ensure '(json-decode)' can decode a JSON string" )
+    (assert-equal       (list (cons "test" "string"))
+                        (decode Json)
+                        "Ensure '(decode)' can decode a JSON string" ]
 
 [de test-tc-json-encode ()
   (let Json (list (cons "test" "string"))
     (assert-equal       "{\"test\":\"string\"}"
                         (json-encode Json)
-                        "Ensure '(json-encode)' can encode a JSON string" ]
+                        "Ensure '(json-encode)' can encode a JSON string" )
+    (assert-equal       "{\"test\":\"string\"}"
+                        (encode Json)
+                        "Ensure '(encode)' can encode a JSON string" ]
 
 [de test-tc-call-t ()
   (assert-t           (tc-call (list 'true))
