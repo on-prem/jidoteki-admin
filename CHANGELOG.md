@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.24.0 (2019-10-31)
+
+  * Update JSON dependency to v4.1.0
+
 ## 1.23.1 (2019-07-31)
 
   * Fix regression, add backward compatible helpers for missing public JSON functions
