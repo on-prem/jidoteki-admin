@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.25.0 (2020-02-18)
+
+  * Install the 'network-config' file if it exists
+  * Ensure backup tar doesn't follow symlinks
+
 ## 1.24.0 (2019-10-31)
 
   * Update JSON dependency to v4.1.0

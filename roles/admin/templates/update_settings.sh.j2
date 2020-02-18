@@ -2,7 +2,7 @@
 #
 # Generic script for updating the network and app settings
 #
-# Copyright (c) 2013-2016 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# Copyright (c) 2013-2020 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # https://unscramble.co.jp
 #
 # VERSION: {{ jidoteki_admin_version }}
@@ -46,6 +46,11 @@ move_settings_files() {
   if [ -f "network.conf" ]; then
     mv -f network.conf /usr/local/etc/
     chmod 640 "/usr/local/etc/network.conf" ; chown 0:997 "/usr/local/etc/network.conf"
+  fi
+
+  if [ -f "network-config" ]; then
+    mv -f network-config /etc/sysconfig/network-config
+    chmod 644 "/etc/sysconfig/network-config" ; chown 0:0 "/etc/sysconfig/network-config"
   fi
 }
 
