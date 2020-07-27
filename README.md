@@ -9,7 +9,7 @@ This repository contains bash scripts, ansible roles, and other files needed to 
 # Requirements
 
 * [PicoLisp](http://picolisp.com) 32-bit or 64-bit `v17.12+`
-* Tested up to PicoLisp `v19.11.25`, [see test runs](https://github.com/on-prem/jidoteki-admin/commit/623b32b90aad3d96f97adcab20c5025978138bee/checks)
+* Tested up to PicoLisp `v20.6.29`, [see test runs](https://github.com/on-prem/jidoteki-admin/commit/623b32b90aad3d96f97adcab20c5025978138bee/checks)
 * Ansible `1.8.4` to `2.7.x`
 * curl
 * git
