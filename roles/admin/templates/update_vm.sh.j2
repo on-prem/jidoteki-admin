@@ -2,7 +2,7 @@
 #
 # Generic script for updating a {{ admin_type_lowcase }}
 #
-# Copyright (c) 2013-2018 Alex Williams, Unscramble. See the LICENSE file (MIT).
+# Copyright (c) 2013-2021 Alex Williams, Unscramble. See the LICENSE file (MIT).
 # http://unscramble.co.jp
 #
 # VERSION: {{ jidoteki_admin_version }}
@@ -92,7 +92,8 @@ decrypt_software_package() {
 
   umask 027
   # decrypt and extract to fixed disk
-  { $openssl_cmd aes-256-cbc -d -pass file:"${admin_dir}/etc/updates.key" -in "${uploads_dir}/${latest_package}" | $tar_cmd -xf - -C extracted; } || log_error "Error decrypting software update package" "E1005"
+  { $openssl_cmd aes-256-cbc -md sha256 -pbkdf2 -d -pass file:"${admin_dir}/etc/updates.key" -in "${uploads_dir}/${latest_package}" | $tar_cmd -xf - -C extracted; } || \
+  { $openssl_cmd aes-256-cbc -md md5 -d -pass file:"${admin_dir}/etc/updates.key" -in "${uploads_dir}/${latest_package}" | $tar_cmd -xf - -C extracted; } || log_error "Error decrypting software update package" "E1005"
   percentage=40
   update_status "running"
 

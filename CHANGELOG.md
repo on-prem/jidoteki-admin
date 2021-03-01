@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.26.0 (2021-03-01)
+
+  * Generate debug bundle using pbkdf2 and sha256 digest
+  * Decrypt update package using pbkdf2 and sha256 digest, or fallback to md5
+
 ## 1.25.0 (2020-02-18)
 
   * Install the 'network-config' file if it exists
